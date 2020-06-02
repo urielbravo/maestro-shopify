@@ -1,11 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Authentication from './components/Authentication'
 
 function App() {
   return (
     <div className="App">
-      <h1>Hi from App.js</h1>
+      <Authentication />
     </div>
   );
 }
