@@ -6,7 +6,6 @@
 
 .App {
   height: 100vh;
-  border: 10px solid black;
   display: flex;
   justify-content: space-between;
   align-items: stretch;

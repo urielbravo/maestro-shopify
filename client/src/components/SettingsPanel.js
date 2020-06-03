@@ -1,9 +1,10 @@
 import React from 'react'
+import Authentication from "./Authentication";
 
 function SettingsPanel() {
     return (
         <div className="settings-panel">
-            <h3>Settings panel</h3>
+            <Authentication />
         </div>
     )
 }

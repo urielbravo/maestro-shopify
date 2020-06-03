@@ -1,0 +1,15 @@
+.authenticate-form {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+#shopify-settings-text {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+
+p#help-text {
+    margin-bottom: 10px;
+}
