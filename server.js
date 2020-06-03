@@ -1,24 +1,14 @@
 const Koa = require("koa");
-var Router = require("koa-router");
-const render = require('koa-ejs');
-const path = require('path');
-
 const app = new Koa();
-var router = new Router();
 
-render(app, {
-    root: path.join(__dirname, 'views'),
-    layout: 'layout',
-    viewExt: 'html',
-    cache: false,
-    debug: false
-})
+const bodyParser = require('koa-bodyparser');
+const json = require('koa-json');
 
-router.get('/test', ctx => {
-    ctx.body = "hello from test"
-})
+app.use(bodyParser());
 
-app.use(router.routes()).use(router.allowedMethods());
+app.use(json());
+
+require('./server/index')(app);
 
 const port = 5000;
 
