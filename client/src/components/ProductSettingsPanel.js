@@ -5,6 +5,13 @@ const API_URL = "https://maestro-store-1.myshopify.com/api/graphql";
 
 class ProductSettingsPanel extends React.Component {
   render() {
+    
+    let products = this.props.products.map(product => {
+      return (
+      <span>{product.node.title}</span>
+      )
+    })
+
     return (
       <div className="product-settings">
         <section className="save">
@@ -74,6 +81,7 @@ class ProductSettingsPanel extends React.Component {
             </div>
           </div>
         </section>
+        {products}
       </div>
     );
   }

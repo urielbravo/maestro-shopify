@@ -21,7 +21,7 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     axios.post("https://maestro-store-1.myshopify.com/api/graphql", {
     query: `{
       products(first: 100) {
@@ -57,14 +57,11 @@ class App extends React.Component {
 
 
   render() {
-    {for (const product of this.state.products) {
-      console.log(product.node)
-    }}
     return (
       <div className="App">
         <SettingsPanel />
         <div className="right-side">
-          <ProductSettingsPanel />
+          <ProductSettingsPanel products={this.state.products}/>
           <ProductDisplay />
         </div>
       </div>
