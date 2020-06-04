@@ -26,8 +26,9 @@ function ProductDisplay(props) {
             : "Nasty Gal Limited Edition T-Shirt 2020"}
         </p>
         <p>
-          Here goes a bunch of description text and then there was the other
-          shirt and I loved it but let's go
+        {product
+            ? product.node.description
+            : "Here goes a bunch of description text and then there was the other shirt and I loved it but let's go"}
         </p>
         <p id="product-price">{product ? `$${product.node.variants.edges[0].node.price}` : "$19.99"}</p>
       </section>

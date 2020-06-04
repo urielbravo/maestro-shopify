@@ -32,6 +32,7 @@ class App extends React.Component {
           node {
             id
             title
+            description
             variants(first: 3){
               edges {
                 node{

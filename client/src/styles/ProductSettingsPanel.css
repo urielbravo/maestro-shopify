@@ -11,8 +11,6 @@
 .save {
   display: flex;
   justify-content: space-between;
-  background: #f8bbd0;
-  height: 3vh;
   border: 1px solid black;
   box-sizing: border-box;
   padding: 8px;
