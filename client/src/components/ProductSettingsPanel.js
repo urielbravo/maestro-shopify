@@ -1,15 +1,30 @@
 import React from "react";
 import "../styles/ProductSettingsPanel.css";
 
-const API_URL = "https://maestro-store-1.myshopify.com/api/graphql";
-
 class ProductSettingsPanel extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      productID: ""
+    }
+
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleChange(e) {
+    this.setState({ productID: e.target.value })
+  }
+
+
   render() {
-    
-    let products = this.props.products.map(product => {
-      return (
-      <span>{product.node.title}</span>
-      )
+    console.log(this.props.products);
+    let products = this.props.products.map((product) => {
+      return <option key={product.node.id} value={product.node.id}>{product.node.title}</option>;
+    });
+
+    let product = this.props.products.find(obj => {
+      return obj.node.id === this.state.productID
     })
 
     return (
@@ -18,7 +33,7 @@ class ProductSettingsPanel extends React.Component {
           <span>&lt;</span>
           <p>save</p>
         </section>
-
+        {console.log(product)}
         <section className="select-icon">
           <div className="icon-select-container">
             <label htmlFor="icon">Icon</label>
@@ -63,17 +78,18 @@ class ProductSettingsPanel extends React.Component {
           </div>
           <div className="select-product">
             <label htmlFor="select-product">SELECT PRODUCT</label>
-            <select name="select-product" id="select-product">
-              <option value="product-1">Product 1</option>
-              <option value="product-2">Product 2</option>
-              <option value="product-3">Product 3</option>
-              <option value="product-4">Product 4</option>
-              <option value="product-5">Product 5</option>
+            <select onChange={this.handleChange} name="select-product" id="select-product">
+              {products}
             </select>
+            <div>Selected value is : {this.state.productID}</div>
           </div>
           <div className="product-preview">
             <div className="product-image">
-              <img src="https://via.placeholder.com/120" alt="" />
+              <img
+                id="panel-image"
+                src="https://cdn.shopify.com/s/files/1/0397/5567/7862/products/putting-on-your-shoes_925x_f71c19ac-c091-4c7f-bbfe-a43d6a0456b7.jpg?v=1590783853"
+                alt="Man doing up his LED high top running shoes"
+              />
             </div>
             <div className="product-description">
               <p>Nasty Gal Limited Edition T-Shirt 2020</p>
@@ -81,7 +97,6 @@ class ProductSettingsPanel extends React.Component {
             </div>
           </div>
         </section>
-        {products}
       </div>
     );
   }

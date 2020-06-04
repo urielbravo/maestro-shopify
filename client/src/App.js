@@ -21,7 +21,7 @@ class App extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     axios.post("https://maestro-store-1.myshopify.com/api/graphql", {
     query: `{
       products(first: 100) {
