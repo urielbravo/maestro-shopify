@@ -71,7 +71,7 @@ div.summary-total {
   justify-content: space-between;
 }
 
-button {
+button:not(#save-button) {
   display: block;
   margin: 0 auto;
   width: 90%;

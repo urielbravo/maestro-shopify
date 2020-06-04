@@ -94,8 +94,10 @@ function ProductDisplay(props) {
       <section className="summary">
         <h4 id="summary-text">Summary</h4>
         <div className="summary-product">
-          <p>Nasty Gal Limited Edition T-Shirt 2020</p>
-          <p>$19.99</p>
+          <p>{product
+            ? product.node.title
+            : "Nasty Gal Limited Edition T-Shirt 2020"}</p>
+          <p>{product ? `$${product.node.variants.edges[0].node.price}` : "$19.99"}</p>
         </div>
         <div className="summary-shipping">
           <p>Shipping</p>
@@ -103,7 +105,7 @@ function ProductDisplay(props) {
         </div>
         <div className="summary-total">
           <p>Total</p>
-          <p id="total">$25.28</p>
+          <p id="total">{product ? `$${Number(product.node.variants.edges[0].node.price) + 5.29}` : "$25.28"}</p>
         </div>
         <button>Buy</button>
       </section>
