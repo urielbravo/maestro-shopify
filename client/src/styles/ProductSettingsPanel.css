@@ -49,14 +49,19 @@ select {
   display: flex;
   justify-content: center;
   align-self: center;
-  background: #dcedc8;
   border: 3px dotted black;
   height: 15vh;
   width: 100%;
   margin-top: 1em;
+  padding-top: 10px;
 }
 
 #panel-image {
-  width: 100px;
-  height: 100px;
+  width: 125px;
+  height: 125px;
 }
+
+#save-button {
+  width: 50px;
+}
+

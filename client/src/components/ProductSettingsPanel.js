@@ -10,11 +10,17 @@ class ProductSettingsPanel extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.trasferId = this.trasferId.bind(this);
   }
 
   handleChange(e) {
     this.setState({ productID: e.target.value });
   }
+
+  trasferId() {
+    this.props.onOptionSelect(this.state.productID)
+  }
+
 
   render() {
     console.log(this.props.products);
@@ -34,7 +40,7 @@ class ProductSettingsPanel extends React.Component {
       <div className="product-settings">
         <section className="save">
           <span>&lt;</span>
-          <p>save</p>
+          <button id="save-button" onClick={this.trasferId}>save</button>
         </section>
         {console.log(product)}
         <section className="select-icon">

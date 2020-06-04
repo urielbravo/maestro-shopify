@@ -17,8 +17,11 @@ class App extends React.Component {
     super();
 
     this.state = {
-      products: []
+      products: [],
+      productID: ""
     }
+
+    this.onOptionSelect = this.onOptionSelect.bind(this);
   }
 
   componentDidMount() {
@@ -62,14 +65,18 @@ class App extends React.Component {
     })
   }
 
+  onOptionSelect(selectedOption) {
+    this.setState({ productID: selectedOption })
+  }
 
   render() {
+    {console.log(`product id value= ${this.state.productID}`)}
     return (
       <div className="App">
         <SettingsPanel />
         <div className="right-side">
-          <ProductSettingsPanel products={this.state.products}/>
-          <ProductDisplay />
+          <ProductSettingsPanel products={this.state.products} onOptionSelect={this.onOptionSelect}/>
+          <ProductDisplay products={this.state.products} productID={this.state.productID} />
         </div>
       </div>
     );
