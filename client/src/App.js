@@ -29,6 +29,13 @@ class App extends React.Component {
           node {
             id
             title
+            variants(first: 3){
+              edges {
+                node{
+                  price
+                }
+              }
+            }
             images(first: 1) {
               edges{
                 node{

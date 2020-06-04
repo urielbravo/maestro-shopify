@@ -6,26 +6,29 @@ class ProductSettingsPanel extends React.Component {
     super();
 
     this.state = {
-      productID: ""
-    }
+      productID: "",
+    };
 
-    this.handleChange = this.handleChange.bind(this)
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(e) {
-    this.setState({ productID: e.target.value })
+    this.setState({ productID: e.target.value });
   }
-
 
   render() {
     console.log(this.props.products);
     let products = this.props.products.map((product) => {
-      return <option key={product.node.id} value={product.node.id}>{product.node.title}</option>;
+      return (
+        <option key={product.node.id} value={product.node.id}>
+          {product.node.title}
+        </option>
+      );
     });
 
-    let product = this.props.products.find(obj => {
-      return obj.node.id === this.state.productID
-    })
+    let product = this.props.products.find((obj) => {
+      return obj.node.id === this.state.productID;
+    });
 
     return (
       <div className="product-settings">
@@ -78,22 +81,39 @@ class ProductSettingsPanel extends React.Component {
           </div>
           <div className="select-product">
             <label htmlFor="select-product">SELECT PRODUCT</label>
-            <select onChange={this.handleChange} name="select-product" id="select-product">
+            <select
+              onChange={this.handleChange}
+              name="select-product"
+              id="select-product"
+            >
               {products}
             </select>
-            <div>Selected value is : {this.state.productID}</div>
           </div>
           <div className="product-preview">
             <div className="product-image">
               <img
                 id="panel-image"
-                src="https://cdn.shopify.com/s/files/1/0397/5567/7862/products/putting-on-your-shoes_925x_f71c19ac-c091-4c7f-bbfe-a43d6a0456b7.jpg?v=1590783853"
-                alt="Man doing up his LED high top running shoes"
+                src={
+                  product
+                    ? product.node.images.edges[0].node.originalSrc
+                    : "https://cdn.shopify.com/s/files/1/0397/5567/7862/products/putting-on-your-shoes_925x_f71c19ac-c091-4c7f-bbfe-a43d6a0456b7.jpg?v=1590783853"
+                }
+                alt={
+                  product
+                    ? product.node.images.edges[0].node.altText
+                    : "Man doing up his LED high top running shoes"
+                }
               />
             </div>
             <div className="product-description">
-              <p>Nasty Gal Limited Edition T-Shirt 2020</p>
-              <p>$19.99</p>
+              <p>
+                {product
+                  ? product.node.title
+                  : "Nasty Gal Limited Edition T-Shirt 2020"}
+              </p>
+              <p>
+                {product ? product.node.variants.edges[0].node.price : "$19.99"}
+              </p>
             </div>
           </div>
         </section>
