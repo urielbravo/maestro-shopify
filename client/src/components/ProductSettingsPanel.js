@@ -67,7 +67,7 @@ class ProductSettingsPanel extends React.Component {
               type="text"
               name="store"
               id="store"
-              value="https//mestro-store.myshopify.com"
+              value="maestro-store-1"
             />
           </div>
           <div className="featured-item">
@@ -80,7 +80,7 @@ class ProductSettingsPanel extends React.Component {
               />
               <input
                 type="radio"
-                name="featured-collection"
+                name="featured-product"
                 id="featured-collection"
               />
             </label>
