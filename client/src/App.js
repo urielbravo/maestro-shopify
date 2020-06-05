@@ -1,8 +1,9 @@
 import React from "react";
 import "./App.css";
-import Authentication from "./components/Authentication";
+// import Authentication from "./components/Authentication";
 // import Connected from "./components/Connected";
 import ProductSettingsPanel from "./components/ProductSettingsPanel";
+import CollectionDisplay from './components/CollectionDisplay'
 import ProductDisplay from "./components/ProductDisplay";
 import SettingsPanel from "./components/SettingsPanel";
 // import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -15,7 +16,7 @@ class App extends React.Component {
     this.state = {
       products: [],
       productID: "",
-      shop: "",
+      shop: [],
       collections: [],
     };
 
@@ -56,6 +57,40 @@ class App extends React.Component {
           }
         }
       }
+      collections(first: 100) {
+        edges {
+          node {
+                  id
+                  title
+                  description
+                  products (first: 100){
+                    edges{
+                      node{
+                        id
+                        title
+                        description
+                        variants(first: 3){
+                          edges {
+                            node{
+                              price
+                            }
+                          }
+                        }
+                        images(first: 1) {
+                          edges{
+                            node{
+                              id
+                              originalSrc
+                              altText
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
     }`,
         },
         {
@@ -67,10 +102,10 @@ class App extends React.Component {
         }
       )
       .then((res) => {
-        console.log(`sotre: ${res}`)
         this.setState({
           products: res.data.data.products.edges,
-          shop: res.data.data.shop.name
+          shop: res.data.data.shop.name,
+          collections: res.data.data.collections.edges
         });
       });
   }
@@ -80,9 +115,6 @@ class App extends React.Component {
   }
 
   render() {
-    {
-      console.log(`product id value= ${this.state.productID}`);
-    }
     return (
       <div className="App">
         <SettingsPanel />
@@ -90,12 +122,14 @@ class App extends React.Component {
           <ProductSettingsPanel
             products={this.state.products}
             onOptionSelect={this.onOptionSelect}
-            shopName={this.state}
+            shopName={this.state.shop}
+            collections={this.state.collections}
           />
-          <ProductDisplay
+          <CollectionDisplay />
+          {/* <ProductDisplay
             products={this.state.products}
             productID={this.state.productID}
-          />
+          /> */}
         </div>
       </div>
     );

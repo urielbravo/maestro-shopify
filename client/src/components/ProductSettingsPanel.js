@@ -7,13 +7,15 @@ class ProductSettingsPanel extends React.Component {
 
     this.state = {
       productID: "",
+      selectedOption: "products",
+      collectionID: ""
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleProductChange = this.handleProductChange.bind(this);
     this.trasferId = this.trasferId.bind(this);
   }
 
-  handleChange(e) {
+  handleProductChange(e) {
     this.setState({ productID: e.target.value });
   }
 
@@ -21,9 +23,22 @@ class ProductSettingsPanel extends React.Component {
     this.props.onOptionSelect(this.state.productID)
   }
 
+  handleOptionChange = changeEvent => {
+    this.setState({
+      selectedOption: changeEvent.target.value
+    });
+  };
+
 
   render() {
-    console.log(this.props.products);
+    let collections = this.props.collections.map((collection) => {
+      return (
+        <option key={collection.node.id} value={collection.node.id}>
+          {collection.node.title}
+        </option>
+      );
+    });
+
     let products = this.props.products.map((product) => {
       return (
         <option key={product.node.id} value={product.node.id}>
@@ -36,59 +51,15 @@ class ProductSettingsPanel extends React.Component {
       return obj.node.id === this.state.productID;
     });
 
-    return (
-      <div className="product-settings">
-        <section className="save">
-          <span>&lt;</span>
-          <button id="save-button" onClick={this.trasferId}>save</button>
-        </section>
-        {console.log(product)}
-        <section className="select-icon">
-          <div className="icon-select-container">
-            <label htmlFor="icon">Icon</label>
-            <select name="icon" id="icon">
-              <option value="icon-1">Icon 1</option>
-              <option value="icon-2">Icon 2</option>
-              <option value="icon-3">Icon 3</option>
-              <option value="icon-4">Icon 4</option>
-              <option value="icon-5">Icon 5</option>
-            </select>
-          </div>
-          <div className="icon-name-container">
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" id="name" />
-          </div>
-        </section>
-
-        <section className="product-section">
-          <div className="connected-store">
-            <label htmlFor="store">CONNECTED STORE</label>
-            <input
-              type="text"
-              name="store"
-              id="store"
-              value="maestro-store-1"
-            />
-          </div>
-          <div className="featured-item">
-            <label htmlFor="feature-item">
-              FEATURED ITEM
-              <input
-                type="radio"
-                name="featured-product"
-                id="featured-product"
-              />
-              <input
-                type="radio"
-                name="featured-product"
-                id="featured-collection"
-              />
-            </label>
-          </div>
-          <div className="select-product">
+    // this renders the collection view or the products view 
+    let renderOption = () => {
+      if (this.state.selectedOption === "products") {
+        return (
+          <div>
+            <div className="select-product">
             <label htmlFor="select-product">SELECT PRODUCT</label>
             <select
-              onChange={this.handleChange}
+              onChange={this.handleProductChange}
               name="select-product"
               id="select-product"
             >
@@ -122,6 +93,80 @@ class ProductSettingsPanel extends React.Component {
               </p>
             </div>
           </div>
+          </div>
+        )
+      } else if (this.state.selectedOption === "collections") {
+        return (
+          <div className="select-product">
+            <label htmlFor="select-collection">SELECT COLLECTION</label>
+            <select
+              onChange={this.handleChange}
+              name="select-collection"
+              id="select-product"
+            >
+              {collections}
+            </select>
+          </div>
+        )
+      }
+    }
+
+    return (
+      <div className="product-settings">
+        <section className="save">
+          <span>&lt;</span>
+          <button id="save-button" onClick={this.trasferId}>save</button>
+        </section>
+        {console.log(product)}
+        <section className="select-icon">
+          <div className="icon-select-container">
+            <label htmlFor="icon">Icon</label>
+            <select name="icon" id="icon">
+              <option value="icon-1">Icon 1</option>
+              <option value="icon-2">Icon 2</option>
+              <option value="icon-3">Icon 3</option>
+              <option value="icon-4">Icon 4</option>
+              <option value="icon-5">Icon 5</option>
+            </select>
+          </div>
+          <div className="icon-name-container">
+            <label htmlFor="name">Name</label>
+            <input type="text" name="name" id="name" />
+          </div>
+        </section>
+
+        <section className="product-section">
+          <div className="connected-store">
+            <label htmlFor="store">CONNECTED STORE</label>
+            <input
+              type="text"
+              name="store"
+              id="store"
+              defaultValue={this.props.shopName}
+            />
+          </div>
+          <div className="featured-item">
+            <label htmlFor="feature-item">
+              FEATURED ITEM
+              <input
+                type="radio"
+                name="shop-items"
+                id="radio-product"
+                value="products"
+                checked={this.state.selectedOption === "products"}
+                onChange={this.handleOptionChange}
+              />
+              <input
+                type="radio"
+                name="shop-items"
+                id="radio-collection"
+                value="collections"
+                checked={this.state.selectedOption === "collections"}
+                onChange={this.handleOptionChange}
+              />
+            </label>
+          </div>
+          {renderOption()}
         </section>
       </div>
     );

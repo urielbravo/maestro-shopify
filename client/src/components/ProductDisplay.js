@@ -6,8 +6,6 @@ function ProductDisplay(props) {
     return obj.node.id === props.productID;
   });
 
-  console.log(props.products);
-
   return (
     <div className="product-display">
       <section className="product-view">
