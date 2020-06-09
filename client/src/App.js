@@ -19,10 +19,12 @@ class App extends React.Component {
       shop: [],
       collections: [],
       collectionID: "",
+      featureSelection: "product",
     };
 
     this.onOptionSelect = this.onOptionSelect.bind(this);
     this.onCollectionSelect = this.onCollectionSelect.bind(this);
+    this.onFeatureSelection = this.onFeatureSelection.bind(this);
   }
 
   componentDidMount() {
@@ -120,8 +122,31 @@ class App extends React.Component {
     this.setState({ collectionID: collection });
   }
 
+  onFeatureSelection(feature) {
+    this.setState({ featureSelection: feature });
+  }
+
+  // this functions dictates which most righside panel renders, if the product display or the collectionsdisplay
+  renderDisplay = () => {
+    if (this.state.featureSelection == "products") {
+      return (
+        <ProductDisplay
+          products={this.state.products}
+          productID={this.state.productID}
+        />
+      );
+    } else if (this.state.featureSelection == "collections") {
+      return (
+        <CollectionDisplay
+          collections={this.state.collections}
+          collectionID={this.state.collectionID}
+        />
+      );
+    }
+  };
 
   render() {
+    console.log(`selected feature: ${this.state.featureSelection}`);
     return (
       <div className="App">
         <SettingsPanel />
@@ -132,11 +157,13 @@ class App extends React.Component {
             shopName={this.state.shop}
             collections={this.state.collections}
             onCollectionSelect={this.onCollectionSelect}
+            onFeatureSelection={this.onFeatureSelection}
           />
-          <CollectionDisplay
+          {this.renderDisplay()}
+          {/* <CollectionDisplay
             collections={this.state.collections}
             collectionID={this.state.collectionID}
-          />
+          /> */}
           {/* <ProductDisplay
             products={this.state.products}
             productID={this.state.productID}

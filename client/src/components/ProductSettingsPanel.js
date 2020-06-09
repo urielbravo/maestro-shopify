@@ -8,12 +8,13 @@ class ProductSettingsPanel extends React.Component {
     this.state = {
       productID: "",
       selectedOption: "products",
-      collectionID: ""
+      collectionID: "",
     };
 
     this.handleProductChange = this.handleProductChange.bind(this);
     this.handleCollectionChange = this.handleCollectionChange.bind(this);
     this.trasferId = this.trasferId.bind(this);
+    // this.featureChange = this.featureChange.bind(this);
   }
 
   handleProductChange(e) {
@@ -21,27 +22,23 @@ class ProductSettingsPanel extends React.Component {
   }
 
   trasferId() {
-    this.props.onOptionSelect(this.state.productID)
-    this.props.onCollectionSelect(this.state.collectionID)
+    this.props.onOptionSelect(this.state.productID);
+    this.props.onCollectionSelect(this.state.collectionID);
   }
 
-  // trasferCollectionId() {
-  //   this.props.onCollectionSelect(this.state.collectionID)
-  // }
-
-  handleOptionChange = changeEvent => {
+  handleOptionChange = (changeEvent) => {
     this.setState({
-      selectedOption: changeEvent.target.value
+      selectedOption: changeEvent.target.value,
     });
+    this.props.onFeatureSelection(changeEvent.target.value);
   };
 
   handleCollectionChange = (e) => {
     this.setState({ collectionID: e.target.value });
-  }
-
+    this.props.onFeatureSelection(this.state.selectedOption);
+  };
 
   render() {
-
     let collections = this.props.collections.map((collection) => {
       return (
         <option key={collection.node.id} value={collection.node.id}>
@@ -62,50 +59,52 @@ class ProductSettingsPanel extends React.Component {
       return obj.node.id === this.state.productID;
     });
 
-    // this renders the collection view or the products view 
+    // this renders the collection view or the products view
     let renderOption = () => {
       if (this.state.selectedOption === "products") {
         return (
           <div>
             <div className="select-product">
-            <label htmlFor="select-product">SELECT PRODUCT</label>
-            <select
-              onChange={this.handleProductChange}
-              name="select-product"
-              id="select-product"
-            >
-              {products}
-            </select>
-          </div>
-          <div className="product-preview">
-            <div className="product-image">
-              <img
-                id="panel-image"
-                src={
-                  product
-                    ? product.node.images.edges[0].node.originalSrc
-                    : "https://cdn.shopify.com/s/files/1/0397/5567/7862/products/putting-on-your-shoes_925x_f71c19ac-c091-4c7f-bbfe-a43d6a0456b7.jpg?v=1590783853"
-                }
-                alt={
-                  product
-                    ? product.node.images.edges[0].node.altText
-                    : "Man doing up his LED high top running shoes"
-                }
-              />
+              <label htmlFor="select-product">SELECT PRODUCT</label>
+              <select
+                onChange={this.handleProductChange}
+                name="select-product"
+                id="select-product"
+              >
+                {products}
+              </select>
             </div>
-            <div className="product-description">
-              <p>
-                {product
-                  ? product.node.title
-                  : "Nasty Gal Limited Edition T-Shirt 2020"}
-              </p>
-              <p>
-                {product ? product.node.variants.edges[0].node.price : "$19.99"}
-              </p>
+            <div className="product-preview">
+              <div className="product-image">
+                <img
+                  id="panel-image"
+                  src={
+                    product
+                      ? product.node.images.edges[0].node.originalSrc
+                      : "https://cdn.shopify.com/s/files/1/0397/5567/7862/products/putting-on-your-shoes_925x_f71c19ac-c091-4c7f-bbfe-a43d6a0456b7.jpg?v=1590783853"
+                  }
+                  alt={
+                    product
+                      ? product.node.images.edges[0].node.altText
+                      : "Man doing up his LED high top running shoes"
+                  }
+                />
+              </div>
+              <div className="product-description">
+                <p>
+                  {product
+                    ? product.node.title
+                    : "Nasty Gal Limited Edition T-Shirt 2020"}
+                </p>
+                <p>
+                  {product
+                    ? product.node.variants.edges[0].node.price
+                    : "$19.99"}
+                </p>
+              </div>
             </div>
           </div>
-          </div>
-        )
+        );
       } else if (this.state.selectedOption === "collections") {
         return (
           <div className="select-product">
@@ -118,15 +117,17 @@ class ProductSettingsPanel extends React.Component {
               {collections}
             </select>
           </div>
-        )
+        );
       }
-    }
+    };
 
     return (
       <div className="product-settings">
         <section className="save">
           <span>&lt;</span>
-          <button id="save-button" onClick={this.trasferId}>save</button>
+          <button id="save-button" onClick={this.trasferId}>
+            save
+          </button>
         </section>
         {console.log(product)}
         <section className="select-icon">
