@@ -12,6 +12,7 @@ class ProductSettingsPanel extends React.Component {
     };
 
     this.handleProductChange = this.handleProductChange.bind(this);
+    this.handleCollectionChange = this.handleCollectionChange.bind(this);
     this.trasferId = this.trasferId.bind(this);
   }
 
@@ -21,7 +22,12 @@ class ProductSettingsPanel extends React.Component {
 
   trasferId() {
     this.props.onOptionSelect(this.state.productID)
+    this.props.onCollectionSelect(this.state.collectionID)
   }
+
+  // trasferCollectionId() {
+  //   this.props.onCollectionSelect(this.state.collectionID)
+  // }
 
   handleOptionChange = changeEvent => {
     this.setState({
@@ -29,8 +35,13 @@ class ProductSettingsPanel extends React.Component {
     });
   };
 
+  handleCollectionChange = (e) => {
+    this.setState({ collectionID: e.target.value });
+  }
+
 
   render() {
+
     let collections = this.props.collections.map((collection) => {
       return (
         <option key={collection.node.id} value={collection.node.id}>
@@ -100,7 +111,7 @@ class ProductSettingsPanel extends React.Component {
           <div className="select-product">
             <label htmlFor="select-collection">SELECT COLLECTION</label>
             <select
-              onChange={this.handleChange}
+              onChange={this.handleCollectionChange}
               name="select-collection"
               id="select-product"
             >

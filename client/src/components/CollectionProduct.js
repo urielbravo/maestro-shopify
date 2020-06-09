@@ -1,14 +1,18 @@
-import React from 'react'
-import "../styles/CollectionProduct.css"
+import React from "react";
+import "../styles/CollectionProduct.css";
 
-function CollectionProduct() {
-    return (
-        <div id="collection-products-container">
-            <img src="https://picsum.photos/100" alt="this is one of the products of the collection"/>
-            <p>Nasty Gal Limited Edition T-Shirt 2020</p>
-            <p>$19.99</p>
-        </div>
-    )
+function CollectionProduct(props) {
+  return (
+    <div id="collection-products-container">
+      <img
+        id="collection-product-image"
+        src={props.productImage}
+        alt="this is one of the products of the collection"
+      />
+      <p>{props.ProductTitle}</p>
+      <p>{props.productPrice}</p>
+    </div>
+  );
 }
 
-export default CollectionProduct
+export default CollectionProduct;

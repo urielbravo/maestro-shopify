@@ -3,7 +3,7 @@ import "./App.css";
 // import Authentication from "./components/Authentication";
 // import Connected from "./components/Connected";
 import ProductSettingsPanel from "./components/ProductSettingsPanel";
-import CollectionDisplay from './components/CollectionDisplay'
+import CollectionDisplay from "./components/CollectionDisplay";
 import ProductDisplay from "./components/ProductDisplay";
 import SettingsPanel from "./components/SettingsPanel";
 // import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -18,9 +18,11 @@ class App extends React.Component {
       productID: "",
       shop: [],
       collections: [],
+      collectionID: "",
     };
 
     this.onOptionSelect = this.onOptionSelect.bind(this);
+    this.onCollectionSelect = this.onCollectionSelect.bind(this);
   }
 
   componentDidMount() {
@@ -105,7 +107,7 @@ class App extends React.Component {
         this.setState({
           products: res.data.data.products.edges,
           shop: res.data.data.shop.name,
-          collections: res.data.data.collections.edges
+          collections: res.data.data.collections.edges,
         });
       });
   }
@@ -113,6 +115,11 @@ class App extends React.Component {
   onOptionSelect(selectedOption) {
     this.setState({ productID: selectedOption });
   }
+
+  onCollectionSelect(collection) {
+    this.setState({ collectionID: collection });
+  }
+
 
   render() {
     return (
@@ -124,8 +131,12 @@ class App extends React.Component {
             onOptionSelect={this.onOptionSelect}
             shopName={this.state.shop}
             collections={this.state.collections}
+            onCollectionSelect={this.onCollectionSelect}
           />
-          <CollectionDisplay />
+          <CollectionDisplay
+            collections={this.state.collections}
+            collectionID={this.state.collectionID}
+          />
           {/* <ProductDisplay
             products={this.state.products}
             productID={this.state.productID}
