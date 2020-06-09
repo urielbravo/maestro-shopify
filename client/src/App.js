@@ -128,14 +128,14 @@ class App extends React.Component {
 
   // this functions dictates which most righside panel renders, if the product display or the collectionsdisplay
   renderDisplay = () => {
-    if (this.state.featureSelection == "products") {
+    if (this.state.featureSelection === "products") {
       return (
         <ProductDisplay
           products={this.state.products}
           productID={this.state.productID}
         />
       );
-    } else if (this.state.featureSelection == "collections") {
+    } else if (this.state.featureSelection === "collections") {
       return (
         <CollectionDisplay
           collections={this.state.collections}
