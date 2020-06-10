@@ -160,14 +160,6 @@ class App extends React.Component {
             onFeatureSelection={this.onFeatureSelection}
           />
           {this.renderDisplay()}
-          {/* <CollectionDisplay
-            collections={this.state.collections}
-            collectionID={this.state.collectionID}
-          /> */}
-          {/* <ProductDisplay
-            products={this.state.products}
-            productID={this.state.productID}
-          /> */}
         </div>
       </div>
     );

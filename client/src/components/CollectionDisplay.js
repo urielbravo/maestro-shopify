@@ -1,19 +1,27 @@
-import React from "react";
+import React, {useState} from "react";
 import CollectionProduct from "./CollectionProduct";
-// import { render } from "react-dom";
+import CollectionProductDetail from './CollectionProductDetail'
+
 
 function CollectionDisplay(props) {
+  const [ChosenProduct, setChosenProduct] = useState("")
+
   let collection = props.collections.find((obj) => {
     return obj.node.id === props.collectionID;
   });
+
+  onProductClicked(product) {
+    setChosenProduct(product)
+  } 
 
   let renderProducts = () => {
     if (collection) {
       return collection.node.products.edges.map((product) => 
          (
           <CollectionProduct
+          key={product.node.id}
+          collection={collection}
           productImage={product.node.images.edges[0].node.originalSrc}
-          productId={product.node.id}
           ProductTitle={product.node.title}
           productPrice={product.node.variants.edges[0].node.price}
         />
@@ -32,6 +40,7 @@ function CollectionDisplay(props) {
           </p>
         </section>
         <section className="collection-products-section">
+          {/* <CollectionProductDetail /> */}
           {renderProducts()}
         </section>
       </div>

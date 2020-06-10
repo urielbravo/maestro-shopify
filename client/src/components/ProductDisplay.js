@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/ProductDisplay.css";
+import ProductView from './ProductView'
 
 function ProductDisplay(props) {
   let product = props.products.find((obj) => {
@@ -9,26 +10,18 @@ function ProductDisplay(props) {
   return (
     <div className="product-display">
       <section className="product-view">
-        <img
-          id="product-image"
-          src={
-            product
-              ? product.node.images.edges[0].node.originalSrc
-              : "https://cdn.shopify.com/s/files/1/0397/5567/7862/products/putting-on-your-shoes_925x_f71c19ac-c091-4c7f-bbfe-a43d6a0456b7.jpg?v=1590783853"
-          }
-          alt=""
-        />
-        <p id="product-title">
-          {product
+        <ProductView
+          productViewImage={product
+            ? product.node.images.edges[0].node.originalSrc
+            : "https://cdn.shopify.com/s/files/1/0397/5567/7862/products/putting-on-your-shoes_925x_f71c19ac-c091-4c7f-bbfe-a43d6a0456b7.jpg?v=1590783853"}
+          productViewTitle={product
             ? product.node.title
             : "Nasty Gal Limited Edition T-Shirt 2020"}
-        </p>
-        <p>
-        {product
+          productViewDescription={product
             ? product.node.description
             : "Here goes a bunch of description text and then there was the other shirt and I loved it but let's go"}
-        </p>
-        <p id="product-price">{product ? `$${product.node.variants.edges[0].node.price}` : "$19.99"}</p>
+          productViewPrice={product ? product.node.variants.edges[0].node.price : "$19.99"}
+        />
       </section>
       <section className="order-form">
         <h3 id="order-form-text">Order Form</h3>
