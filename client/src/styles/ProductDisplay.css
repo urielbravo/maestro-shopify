@@ -12,10 +12,6 @@ section.product-view {
   flex-direction: column;
 }
 
-#product-image {
-  width: 80%;
-}
-
 #product-title {
   font-weight: bold;
 }

@@ -146,7 +146,6 @@ class App extends React.Component {
   };
 
   render() {
-    console.log(`selected feature: ${this.state.featureSelection}`);
     return (
       <div className="App">
         <SettingsPanel />

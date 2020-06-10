@@ -1,0 +1,12 @@
+#product-image {
+    width: 30%;
+  }
+  
+  #product-title {
+    font-weight: bold;
+  }
+  
+  #product-price {
+    margin-left: auto;
+    font-weight: bold;
+  }
