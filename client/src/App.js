@@ -7,9 +7,14 @@ import CollectionDisplay from "./components/CollectionDisplay";
 import ProductDisplay from "./components/ProductDisplay";
 import SettingsPanel from "./components/SettingsPanel";
 // import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { StorefrontContext } from './components/StorefrontContext'
 import axios from "axios";
 
+
 class App extends React.Component {
+
+  static contextType = StorefrontContext;
+
   constructor() {
     super();
 
@@ -27,7 +32,9 @@ class App extends React.Component {
     this.onFeatureSelection = this.onFeatureSelection.bind(this);
   }
 
+
   componentDidMount() {
+    let storefrontContext = this.context;
     axios
       .post(
         "https://maestro-store-1.myshopify.com/api/graphql",
@@ -100,8 +107,7 @@ class App extends React.Component {
         {
           headers: {
             "Content-Type": "application/json",
-            "X-Shopify-Storefront-Access-Token":
-              "c58041071dcfc77a86ad631cf6e91633",
+            "X-Shopify-Storefront-Access-Token": storefrontContext.access_token,
           },
         }
       )
@@ -128,6 +134,7 @@ class App extends React.Component {
 
   // this functions dictates which most righside panel renders, if the product display or the collectionsdisplay
   renderDisplay = () => {
+
     if (this.state.featureSelection === "products") {
       return (
         <ProductDisplay

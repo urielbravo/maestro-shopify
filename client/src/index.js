@@ -3,11 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { StorefrontContext } from './components/StorefrontContext'
 
+const urlParams = new URLSearchParams(window.location.search);
+const storefrontAccessToken = { access_token: urlParams.get('storefrontaccesstoken') };
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <StorefrontContext.Provider value={storefrontAccessToken}>
+      <App />
+    </StorefrontContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

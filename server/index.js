@@ -1,14 +1,12 @@
 const dotenv = require('dotenv');
 dotenv.config();
-
 const Router = require('koa-router');
-const https = require('https');
 const axios = require('axios');
 
 const {
     SHOPIFY_API_SECRET_KEY,
     SHOPIFY_API_KEY,
-    HOST,
+    FRONT_END_URL,
 } = process.env;
 
 module.exports = function (app) {
@@ -33,7 +31,8 @@ module.exports = function (app) {
         console.log('code: ' + code);
 
         let token = await getStoreFrontAccessToken(shop, code);
-        ctx.body = { storefront_access_token: token }
+        // ctx.body = { storefront_access_token: token }
+        ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${token}`);
 
     });
 
