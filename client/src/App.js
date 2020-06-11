@@ -10,6 +10,7 @@ import SettingsPanel from "./components/SettingsPanel";
 import { StorefrontContext } from './components/StorefrontContext'
 import axios from "axios";
 
+const SHOP = "maestro-store-1";
 
 class App extends React.Component {
 
@@ -37,7 +38,7 @@ class App extends React.Component {
     let storefrontContext = this.context;
     axios
       .post(
-        "https://maestro-store-1.myshopify.com/api/graphql",
+        `https://${SHOP}.myshopify.com/api/graphql`,
         {
           query: `{
             shop {
@@ -53,6 +54,7 @@ class App extends React.Component {
               edges {
                 node{
                   price
+                  id
                 }
               }
             }
@@ -84,6 +86,7 @@ class App extends React.Component {
                           edges {
                             node{
                               price
+                              id
                             }
                           }
                         }

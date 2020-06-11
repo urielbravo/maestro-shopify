@@ -1,11 +1,40 @@
 import React from "react";
 import "../styles/ProductDisplay.css";
 import ProductView from './ProductView'
+import Client from 'shopify-buy';
+import { StorefrontContext } from './StorefrontContext'
+
 
 function ProductDisplay(props) {
+  const context = React.useContext(StorefrontContext);
+
   let product = props.products.find((obj) => {
     return obj.node.id === props.productID;
   });
+
+  function startCheckout() {
+    const client = Client.buildClient({
+      domain: context.shop,
+      storefrontAccessToken: context.access_token
+    });
+
+    // Create checkout
+    return client.checkout.create().then((checkout) => {
+      // Do something with the checkout
+      const lineItemsToAdd = [
+        {
+          variantId: product.node.variants.edges[0].node.id,
+          quantity: 1
+        }
+      ];
+
+      // Add an item to the checkout
+      return client.checkout.addLineItems(checkout.id, lineItemsToAdd).then((checkout) => {
+        // complete checkout
+        window.open(checkout.webUrl);
+      });
+    });
+  }
 
   return (
     <div className="product-display">
@@ -98,7 +127,7 @@ function ProductDisplay(props) {
           <p>Total</p>
           <p id="total">{product ? `$${Number(product.node.variants.edges[0].node.price) + 5.29}` : "$25.28"}</p>
         </div>
-        <button>Buy</button>
+        <button onClick={startCheckout}>Buy</button>
       </section>
     </div>
   );

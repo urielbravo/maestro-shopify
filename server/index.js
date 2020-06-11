@@ -32,7 +32,7 @@ module.exports = function (app) {
 
         let token = await getStoreFrontAccessToken(shop, code);
         // ctx.body = { storefront_access_token: token }
-        ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${token}`);
+        ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${token}&shop=${shop}`);
 
     });
 

@@ -129,7 +129,7 @@ class ProductSettingsPanel extends React.Component {
             save
           </button>
         </section>
-        {console.log(product)}
+        {/* {console.log(product)} */}
         <section className="select-icon">
           <div className="icon-select-container">
             <label htmlFor="icon">Icon</label>

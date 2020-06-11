@@ -6,11 +6,14 @@ import * as serviceWorker from './serviceWorker';
 import { StorefrontContext } from './components/StorefrontContext'
 
 const urlParams = new URLSearchParams(window.location.search);
-const storefrontAccessToken = { access_token: urlParams.get('storefrontaccesstoken') };
+const storefrontContext = {
+  access_token: urlParams.get('storefrontaccesstoken'),
+  shop: urlParams.get('shop')
+};
 
 ReactDOM.render(
   <React.StrictMode>
-    <StorefrontContext.Provider value={storefrontAccessToken}>
+    <StorefrontContext.Provider value={storefrontContext}>
       <App />
     </StorefrontContext.Provider>
   </React.StrictMode>,
