@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CollectionProduct from "./CollectionProduct";
 import CollectionProductDetail from "./CollectionProductDetail";
+import Cart from './Cart'
 
 function CollectionDisplay(props) {
   const [ChosenProduct, setChosenProduct] = useState("");
@@ -52,6 +53,7 @@ function CollectionDisplay(props) {
           </p>
         </section>
         <section className="collection-products-section">
+          {/* <Cart /> */}
           {ChosenProduct === "" ? renderProducts()  : renderCollectionProductDetail()}
         </section>
       </div>

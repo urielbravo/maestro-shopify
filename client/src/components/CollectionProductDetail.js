@@ -9,6 +9,10 @@ function CollectionProductDetail(props) {
     return <ProductDisplay />;
   };
 
+  let addToCart = () => {
+
+  }
+
   return (
     <div>
       <ProductView
@@ -20,7 +24,9 @@ function CollectionProductDetail(props) {
       {buyProduct === "" ? (
         <>
           
-          <button>ADD TO CART</button>
+          <button
+            onClick={addToCart}
+          >ADD TO CART</button>
           <button
             onClick={() =>
               setbuyProduct({
