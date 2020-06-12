@@ -1,12 +1,14 @@
+/*  Main div */
 .product-settings {
-  /* box-sizing: border-box;
-  margin: 0;
-  padding: 2px; */
-  width: 28vw;
+  width: 30vw;
   height: 85vh;
   background: #f5f5f5;
   border: 1px solid black;
+  display: flex;
+  flex-direction: column;
 }
+
+/* Save section */
 
 .save {
   display: flex;
@@ -15,6 +17,8 @@
   box-sizing: border-box;
   padding: 8px;
 }
+
+/* Select icon section */
 
 .select-icon {
   display: flex;
@@ -29,11 +33,17 @@
   margin-right: 20px;
 }
 
+/* this is so the labels go on top of the inputs */
 input,
 label,
 select {
   display: block;
 }
+
+/* this is the section that contains the connected store input
+  the feature item where you slecty if you want to show a single product or 
+  a collection of your store
+*/
 
 .product-section {
   display: flex;
@@ -42,27 +52,64 @@ select {
   padding: 8px;
 }
 
+.connected-store {
+  margin-top: 1rem;
+}
+
+/* this is the product preview, where you see the image of the product,
+  the title of the product and the price
+*/
+
 .product-preview {
   display: flex;
   justify-content: center;
   align-self: center;
   border: 3px dotted black;
-  height: 15vh;
+  height: 20vh;
   width: 100%;
   margin-top: 1em;
   padding-top: 10px;
 }
 
 #panel-image {
-  width: 125px;
-  height: 125px;
+  width: 60%;
+  height: 100%;
 }
 
 #save-button {
-  width: 50px;
+  white-space: normal;
 }
 
-#radio-products {
+
+/* radio feature section */
+.featured-item-text {
+  margin-top: 1rem;
+}
+
+.featured-item {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+
+
+
+/* this 3 styles below, makes the radio inputs to look like buttons */
+.featured-item input[type="radio"] {
+  display: none;
   
 }
 
+.featured-item label {
+  display: inline-block;
+  background-color: #ddd;
+  padding: 4px 11px;
+  font-family: Arial;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+.featured-item input[type="radio"]:checked+label {
+  background-color: #bbb;
+}

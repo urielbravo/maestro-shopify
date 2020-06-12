@@ -7,16 +7,18 @@
 .App {
   height: 100vh;
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
+  /* justify-content: space-between; */
+  /* align-items: stretch; */
 }
 
 .right-side {
   display: flex;
+  justify-content: flex-end;
+  flex: 1;
 }
 
 .settings-panel {
-  width: 200px;
+  flex: 0.25;
   background: #f5f5f5;
   border: 1px solid black;
 }

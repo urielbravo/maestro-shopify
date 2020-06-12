@@ -157,26 +157,26 @@ class ProductSettingsPanel extends React.Component {
               defaultValue={this.props.shopName}
             />
           </div>
+          <p className="featured-item-text">FEATURE ITEM</p>
           <div className="featured-item">
-            <label htmlFor="feature-item">
-              FEATURED ITEM
-              <input
-                type="radio"
-                name="shop-items"
-                id="radio-product"
-                value="products"
-                checked={this.state.selectedOption === "products"}
-                onChange={this.handleOptionChange}
-              />
-              <input
-                type="radio"
-                name="shop-items"
-                id="radio-collection"
-                value="collections"
-                checked={this.state.selectedOption === "collections"}
-                onChange={this.handleOptionChange}
-              />
-            </label>
+            <input
+              type="radio"
+              name="shop-items"
+              id="radio-product"
+              value="products"
+              checked={this.state.selectedOption === "products"}
+              onChange={this.handleOptionChange}
+            />
+            <label htmlFor="radio-product">FEATURED PRODUCT</label>
+            <input
+              type="radio"
+              name="shop-items"
+              id="radio-collection"
+              value="collections"
+              checked={this.state.selectedOption === "collections"}
+              onChange={this.handleOptionChange}
+            />
+            <label htmlFor="radio-collection">FEATURED COLLECTION</label>
           </div>
           {renderOption()}
         </section>

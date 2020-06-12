@@ -25,7 +25,7 @@ class App extends React.Component {
       shop: [],
       collections: [],
       collectionID: "",
-      featureSelection: "product",
+      featureSelection: "products",
     };
 
     this.onOptionSelect = this.onOptionSelect.bind(this);

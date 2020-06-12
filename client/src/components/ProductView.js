@@ -6,7 +6,7 @@ function ProductView(props) {
     <>
       <img id="product-image" src={props.productViewImage} alt="" />
       <p id="product-title">{props.productViewTitle}</p>
-      <p>{props.productViewDescription}</p>
+      <p id="product-description">{props.productViewDescription}</p>
       <p id="product-price">{`$${props.productViewPrice}`}</p>
     </>
   );

@@ -1,0 +1,40 @@
+.cart-product {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.product-layout {
+    margin-top: 0.5rem;
+    display: flex;
+}
+
+
+.product-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-right-items {
+    display: flex;
+    flex-direction: column;
+    text-align: end;
+}
+
+.cart-subtotal {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* Billing checkbox section */
+
+.billing-option {
+    margin-top: 10px;
+}
+
+.billing-checkbox {
+    margin-top: 5px;
+    display: flex;
+}

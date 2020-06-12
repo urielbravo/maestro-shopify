@@ -1,16 +1,24 @@
 import React, { useState } from "react";
 import ProductView from "./ProductView";
 import ProductDisplay from "./ProductDisplay";
+import Cart from './Cart'
+import { ProductContext } from './ProductContext'
 
 function CollectionProductDetail(props) {
   const [buyProduct, setbuyProduct] = useState("");
+  const [toCart, setToCart] = useState({})
 
   let renderProductBuy = () => {
     return <ProductDisplay />;
   };
 
   let addToCart = () => {
-
+    setToCart({
+      productViewImage: props.productImage,
+      productViewTitle: props.productTitle,
+      productViewDescription: props.productDescription,
+      productViewPrice: props.productPrice
+    })
   }
 
   return (
@@ -119,6 +127,9 @@ function CollectionProductDetail(props) {
       </section>
         </>
       )}
+       {/* <ProductContext.Provider value={toCart} style={{ Display: "none" }} >
+        <Cart  />
+      </ProductContext.Provider> */}
     </div>
   );
 }

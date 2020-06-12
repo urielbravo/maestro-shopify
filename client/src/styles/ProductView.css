@@ -1,12 +1,21 @@
 #product-image {
-    width: 30%;
+    width: 80%;
+    display: block;
+    margin: 0 auto;
   }
   
   #product-title {
     font-weight: bold;
+    margin-top: 1rem;
+  }
+
+  #product-description {
+    margin-top: 1rem;
   }
   
   #product-price {
     margin-left: auto;
     font-weight: bold;
+    margin-top: 1rem;
+    text-align: end;
   }

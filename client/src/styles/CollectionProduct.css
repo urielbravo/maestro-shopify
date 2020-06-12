@@ -1,9 +1,12 @@
 #collection-products-container {
     display: flex;
     flex-direction: column;
+    text-align: center;
 }
 
 #collection-product-image {
-    height: 100px;
-    width: 100px;
+    height: 7rem;
+    width: 7rem;
+    display: block;
+    margin: auto;
 }

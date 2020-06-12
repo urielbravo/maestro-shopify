@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import CollectionProduct from "./CollectionProduct";
 import CollectionProductDetail from "./CollectionProductDetail";
-import Cart from './Cart'
+import Cart from "./Cart";
+import "../styles/CollectionDisplay.css";
 
 function CollectionDisplay(props) {
   const [ChosenProduct, setChosenProduct] = useState("");
+  const [cartToggle, setCartToggle] = useState(false);
 
   let collection = props.collections.find((obj) => {
     return obj.node.id === props.collectionID;
   });
 
   let onProductClicked = (product) => {
-    setChosenProduct(product)
+    setChosenProduct(product);
   };
 
   let renderProducts = () => {
@@ -32,31 +34,56 @@ function CollectionDisplay(props) {
 
   let renderCollectionProductDetail = () => {
     return (
-      <CollectionProductDetail 
-            productImage={ChosenProduct.productImage}
-            productTitle={ChosenProduct.productTitle}
-            productPrice={ChosenProduct.productPrice}
-            productDescription={ChosenProduct.productDescription}
-          />
-    )
-  }
+      <CollectionProductDetail
+        productImage={ChosenProduct.productImage}
+        productTitle={ChosenProduct.productTitle}
+        productPrice={ChosenProduct.productPrice}
+        productDescription={ChosenProduct.productDescription}
+      />
+    );
+  };
 
-  console.log(`product clicked: ${JSON.stringify(ChosenProduct)}`);
+  let renderCart = () => {
+    return <Cart />;
+  };
+
+  let renderView = () => {
+    if (ChosenProduct === "" && !cartToggle) {
+      return (
+        <section className="collection-products-list">
+          {renderProducts()}
+        </section>
+      );
+    } else if (ChosenProduct !== "" && !cartToggle) {
+      return (
+        <section className="collection-products-section">
+          {renderCollectionProductDetail()}
+        </section>
+      );
+    } else {
+      return(
+        renderCart()
+      )
+    }
+  };
 
   return (
-    <div>
-      <div className="collection-display">
-        <section className="collection-name-section">
-          <h3>FEATURED COLLECTION</h3>
-          <p>
-            {collection ? collection.node.title : "just another collection"}
-          </p>
-        </section>
-        <section className="collection-products-section">
-          {/* <Cart /> */}
-          {ChosenProduct === "" ? renderProducts()  : renderCollectionProductDetail()}
-        </section>
-      </div>
+    <div className="collection-display">
+      <section className="collection-name-section">
+        <h3>FEATURED COLLECTION</h3>
+        <p>{collection ? collection.node.title : "just another collection"}</p>
+        <p
+          className="cart-icon"
+          onClick={() => {
+            setCartToggle(!cartToggle);
+          }}
+        >
+          {cartToggle ? "BACK TO SHOP" : "CART"}
+        </p>
+      </section>
+      <>
+        {renderView()}
+      </>
     </div>
   );
 }

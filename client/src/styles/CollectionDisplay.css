@@ -1,8 +1,26 @@
-.collection-products-section {
+.collection-products-list {
     display: flex;
     flex-wrap: wrap;
 }
 
-.collection-products-section > div {
+.collection-products-list > div {
     flex: 0 50%;
+    /* box-sizing:border-box */
+}
+
+.collection-display {
+    width: 25%;
+}
+
+.collection-name-section {
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.collection-products-section {
+    border: 1px solid black;
+}
+
+.cart-icon {
+    text-align: end;
 }
