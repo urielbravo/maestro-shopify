@@ -1,19 +1,30 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import OrderForm from "./OrderForm";
 import "../styles/Cart.css";
+import { ProductContext } from './ProductContext'
 
-function Cart() {
+function Cart(props) {
+  // const [cart, setCart] = useState([])
 
+  const { cart } = useContext(ProductContext)
+
+  
+
+  // useEffect(() => {
+  //   setCart(cart => [...cart, productFromContext])
+  // }, [productFromContext])
   
   let cartProducts = [
     {
       id: 1,
+      key: 1,
       image: "https://via.placeholder.com/100",
       title: "product 1",
       price: 19.99,
     },
     {
       id: 2,
+      key: 2,
       image: "https://via.placeholder.com/100",
       title: "product 2",
       price: 14.99,
@@ -39,10 +50,11 @@ function Cart() {
 
   return (
     <>
+    {console.log(`this is the cart state: ${JSON.stringify(cart)}`)}
       <div className="cart-product">{displayProducts}</div>
       <div className="cart-subtotal">
-        <p>Subtotal({cartProducts.length})</p>
-        <p>${cartProducts.reduce((a, b) => +a + +b.price, 0)}</p>
+        <p>Subtotal({cart.length})</p>
+        <p>${cart.reduce((a, b) => +a + +b.price, 0)}</p>
       </div>
       <OrderForm />
       <div className="billing-option">

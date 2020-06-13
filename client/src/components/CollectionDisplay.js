@@ -3,10 +3,19 @@ import CollectionProduct from "./CollectionProduct";
 import CollectionProductDetail from "./CollectionProductDetail";
 import Cart from "./Cart";
 import "../styles/CollectionDisplay.css";
+import { ProductContext } from "./ProductContext";
+import { BackToShopContext } from "./BackToShopContext";
 
 function CollectionDisplay(props) {
   const [ChosenProduct, setChosenProduct] = useState("");
   const [cartToggle, setCartToggle] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [backToShop, setbackToShop] = useState(true);
+
+  function addToCart(item) {
+    setCart([...cart, item]);
+    console.log(cart);
+  }
 
   let collection = props.collections.find((obj) => {
     return obj.node.id === props.collectionID;
@@ -48,22 +57,20 @@ function CollectionDisplay(props) {
   };
 
   let renderView = () => {
-    if (ChosenProduct === "" && !cartToggle) {
+    if (!ChosenProduct && !cartToggle && backToShop) {
       return (
         <section className="collection-products-list">
           {renderProducts()}
         </section>
       );
-    } else if (ChosenProduct !== "" && !cartToggle) {
+    } else if (ChosenProduct && !cartToggle && backToShop) {
       return (
-        <section className="collection-products-section">
-          {renderCollectionProductDetail()}
-        </section>
+          <section className="collection-products-section">
+            {renderCollectionProductDetail()}
+          </section>
       );
-    } else {
-      return(
-        renderCart()
-      )
+    } else if(cartToggle && backToShop) {
+      return renderCart();
     }
   };
 
@@ -78,12 +85,14 @@ function CollectionDisplay(props) {
             setCartToggle(!cartToggle);
           }}
         >
-          {cartToggle ? "BACK TO SHOP" : "CART"}
+          {cartToggle ? "GO BACK" : "CART"}
         </p>
       </section>
-      <>
+      <BackToShopContext.Provider value={{ backToShop, setbackToShop }}>
+      <ProductContext.Provider value={{ cart, addToCart }}>
         {renderView()}
-      </>
+      </ProductContext.Provider>
+      </BackToShopContext.Provider>
     </div>
   );
 }
