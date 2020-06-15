@@ -1,45 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import OrderForm from "./OrderForm";
 import "../styles/Cart.css";
-import { ProductContext } from './ProductContext'
+import { CartProductsContext } from './CartProductsContext'
 
 function Cart(props) {
-  // const [cart, setCart] = useState([])
-
-  const { cart } = useContext(ProductContext)
-
-  
-
-  // useEffect(() => {
-  //   setCart(cart => [...cart, productFromContext])
-  // }, [productFromContext])
-  
-  let cartProducts = [
-    {
-      id: 1,
-      key: 1,
-      image: "https://via.placeholder.com/100",
-      title: "product 1",
-      price: 19.99,
-    },
-    {
-      id: 2,
-      key: 2,
-      image: "https://via.placeholder.com/100",
-      title: "product 2",
-      price: 14.99,
-    },
-  ];
+  const { cartProducts } = useContext(CartProductsContext)
 
   let displayProducts = cartProducts.map((product) => {
     return (
       <>
         <div className="product-layout">
-          <img id={product.id} src={product.image} alt={product.title} />
+          <img className="cart-image" src={product.productViewImage} alt={product.productViewTitle} />
           <div className="product-text">
-            <p>{product.title}</p>
+            <p>{product.productViewTitle}</p>
             <div className="cart-right-items">
-              <p>{product.price}</p>
+              <p>${product.productViewPrice}</p>
               <p>remove</p>
             </div>
           </div>
@@ -50,11 +25,10 @@ function Cart(props) {
 
   return (
     <>
-    {console.log(`this is the cart state: ${JSON.stringify(cart)}`)}
       <div className="cart-product">{displayProducts}</div>
       <div className="cart-subtotal">
-        <p>Subtotal({cart.length})</p>
-        <p>${cart.reduce((a, b) => +a + +b.price, 0)}</p>
+        <p>Subtotal({cartProducts.length})</p>
+        <p>${cartProducts.reduce((a, b) => +a + +b.productViewPrice, 0)}</p>
       </div>
       <OrderForm />
       <div className="billing-option">

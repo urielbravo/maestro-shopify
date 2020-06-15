@@ -1,21 +1,14 @@
 import React, { useState, useContext } from "react";
 import ProductView from "./ProductView";
-import { ProductContext } from './ProductContext'
-import { BackToShopContext } from './BackToShopContext'
+import { BackToShopContext } from "./BackToShopContext";
+import { CartProductsContext } from "./CartProductsContext";
 
 function CollectionProductDetail(props) {
   const [buyProduct, setbuyProduct] = useState("");
 
-  const { cart, addToCart } = useContext(ProductContext)
-  const { backToShop, setbackToShop } = useContext(BackToShopContext)
+  const { backToShop, setbackToShop } = useContext(BackToShopContext);
 
-  let passProductToCart = () => {
-    props.addToCart({
-      productViewImage: props.productImage,
-      productViewTitle: props.productTitle,
-      productViewPrice: props.productPrice,
-    })
-  }
+  const { cartProducts, setCartProducts } = useContext(CartProductsContext);
 
   return (
     <div>
@@ -27,13 +20,20 @@ function CollectionProductDetail(props) {
       />
       {buyProduct === "" ? (
         <>
-          <button onClick={() => {
-            addToCart({
-              productViewImage: props.productImage,
-              productViewTitle: props.productTitle,
-              productViewPrice: props.productPrice,
-            })
-          }}>ADD TO CART</button>
+          <button
+            onClick={() => {
+              setCartProducts([
+                ...cartProducts,
+                {
+                  productViewImage: props.productImage,
+                  productViewTitle: props.productTitle,
+                  productViewPrice: props.productPrice,
+                },
+              ]);
+            }}
+          >
+            ADD TO CART
+          </button>
           <button
             onClick={() =>
               setbuyProduct({
@@ -46,9 +46,13 @@ function CollectionProductDetail(props) {
           >
             BUY NOW
           </button>
-          <button onClick={() => {
-            setbackToShop(!backToShop);
-          }}>BACK TO SHOP</button>
+          <button
+            onClick={() => {
+              setbackToShop(!backToShop);
+            }}
+          >
+            BACK TO SHOP
+          </button>
         </>
       ) : (
         <>

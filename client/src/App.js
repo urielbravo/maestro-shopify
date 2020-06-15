@@ -7,13 +7,13 @@ import CollectionDisplay from "./components/CollectionDisplay";
 import ProductDisplay from "./components/ProductDisplay";
 import SettingsPanel from "./components/SettingsPanel";
 // import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { StorefrontContext } from './components/StorefrontContext'
+import { StorefrontContext } from "./components/StorefrontContext";
 import axios from "axios";
+import { CartProductsProvider } from "./components/CartProductsContext";
 
 const SHOP = "maestro-store-1";
 
 class App extends React.Component {
-
   static contextType = StorefrontContext;
 
   constructor() {
@@ -32,7 +32,6 @@ class App extends React.Component {
     this.onCollectionSelect = this.onCollectionSelect.bind(this);
     this.onFeatureSelection = this.onFeatureSelection.bind(this);
   }
-
 
   componentDidMount() {
     let storefrontContext = this.context;
@@ -137,7 +136,6 @@ class App extends React.Component {
 
   // this functions dictates which most righside panel renders, if the product display or the collectionsdisplay
   renderDisplay = () => {
-
     if (this.state.featureSelection === "products") {
       return (
         <ProductDisplay
@@ -156,22 +154,23 @@ class App extends React.Component {
   };
 
   render() {
-    
     return (
-      <div className="App">
-        <SettingsPanel />
-        <div className="right-side">
-          <ProductSettingsPanel
-            products={this.state.products}
-            onOptionSelect={this.onOptionSelect}
-            shopName={this.state.shop}
-            collections={this.state.collections}
-            onCollectionSelect={this.onCollectionSelect}
-            onFeatureSelection={this.onFeatureSelection}
-          />
-          {this.renderDisplay()}
+      <CartProductsProvider>
+        <div className="App">
+          <SettingsPanel />
+          <div className="right-side">
+            <ProductSettingsPanel
+              products={this.state.products}
+              onOptionSelect={this.onOptionSelect}
+              shopName={this.state.shop}
+              collections={this.state.collections}
+              onCollectionSelect={this.onCollectionSelect}
+              onFeatureSelection={this.onFeatureSelection}
+            />
+            {this.renderDisplay()}
+          </div>
         </div>
-      </div>
+      </CartProductsProvider>
     );
   }
 }

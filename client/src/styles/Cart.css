@@ -7,6 +7,12 @@
 .product-layout {
     margin-top: 0.5rem;
     display: flex;
+    justify-content: space-between;
+}
+
+.cart-image {
+    height: 8vh;
+    width: 6vw;
 }
 
 
