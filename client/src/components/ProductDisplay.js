@@ -14,7 +14,7 @@ function ProductDisplay(props) {
 
   function startCheckout() {
     const client = Client.buildClient({
-      domain: "context.shop",
+      domain: context.shop,
       storefrontAccessToken: context.access_token
     });
 

@@ -5,6 +5,7 @@ function CollectionProduct(props) {
 
   let passProduct = () => {
     props.onProductClicked({
+      productId: props.productId,
       productImage: props.productImage,
       productTitle: props.productTitle,
       productDescription: props.productDescription,

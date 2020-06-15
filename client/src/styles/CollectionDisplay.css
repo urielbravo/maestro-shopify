@@ -10,15 +10,12 @@
 
 .collection-display {
     width: 25%;
+    padding: .5rem;
 }
 
 .collection-name-section {
     text-align: center;
     margin-bottom: 2em;
-}
-
-.collection-products-section {
-    border: 1px solid black;
 }
 
 .cart-icon {

@@ -4,7 +4,13 @@ import "../styles/Cart.css";
 import { CartProductsContext } from './CartProductsContext'
 
 function Cart(props) {
-  const { cartProducts } = useContext(CartProductsContext)
+  const { cartProducts, setCartProducts } = useContext(CartProductsContext)
+
+
+  const handleRemoveItem = (e) => {
+    const name = e.target.getAttribute("name")
+    setCartProducts(cartProducts.filter(product => product.productId !== name));
+   };
 
   let displayProducts = cartProducts.map((product) => {
     return (
@@ -15,7 +21,9 @@ function Cart(props) {
             <p>{product.productViewTitle}</p>
             <div className="cart-right-items">
               <p>${product.productViewPrice}</p>
-              <p>remove</p>
+              <span name={product.productId} onClick={handleRemoveItem}> 
+                remove
+              </span>
             </div>
           </div>
         </div>
@@ -25,19 +33,13 @@ function Cart(props) {
 
   return (
     <>
+      <p>Cart</p>
       <div className="cart-product">{displayProducts}</div>
       <div className="cart-subtotal">
         <p>Subtotal({cartProducts.length})</p>
         <p>${cartProducts.reduce((a, b) => +a + +b.productViewPrice, 0)}</p>
       </div>
       <OrderForm />
-      <div className="billing-option">
-        <h4>Billing</h4>
-        <div className="billing-checkbox">
-          <input type="checkbox" name="billing" id="billing" />
-          <label htmlFor="billing">Same as shipping</label>
-        </div>
-      </div>
     </>
   );
 }

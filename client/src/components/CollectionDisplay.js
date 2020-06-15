@@ -32,6 +32,7 @@ function CollectionDisplay(props) {
           onProductClicked={onProductClicked}
           key={product.node.id}
           collection={collection}
+          productId={product.node.id}
           productImage={product.node.images.edges[0].node.originalSrc}
           productTitle={product.node.title}
           productDescription={product.node.description}
@@ -44,6 +45,7 @@ function CollectionDisplay(props) {
   let renderCollectionProductDetail = () => {
     return (
       <CollectionProductDetail
+        productId={ChosenProduct.productId}
         productImage={ChosenProduct.productImage}
         productTitle={ChosenProduct.productTitle}
         productPrice={ChosenProduct.productPrice}
@@ -57,19 +59,19 @@ function CollectionDisplay(props) {
   };
 
   let renderView = () => {
-    if (!ChosenProduct && !cartToggle && backToShop) {
+    if (!ChosenProduct && !cartToggle) {
       return (
         <section className="collection-products-list">
           {renderProducts()}
         </section>
       );
-    } else if (ChosenProduct && !cartToggle && backToShop) {
+    } else if (ChosenProduct && !cartToggle) {
       return (
-          <section className="collection-products-section">
-            {renderCollectionProductDetail()}
-          </section>
+        <section className="collection-products-section">
+          {renderCollectionProductDetail()}
+        </section>
       );
-    } else if(cartToggle && backToShop) {
+    } else if (cartToggle) {
       return renderCart();
     }
   };
@@ -85,13 +87,13 @@ function CollectionDisplay(props) {
             setCartToggle(!cartToggle);
           }}
         >
-          {cartToggle ? "GO BACK" : "CART"}
+          {cartToggle ? <span>&lt; GO BACK</span> : "CART"}
         </p>
       </section>
       <BackToShopContext.Provider value={{ backToShop, setbackToShop }}>
-      <ProductContext.Provider value={{ cart, addToCart }}>
-        {renderView()}
-      </ProductContext.Provider>
+        <ProductContext.Provider value={{ cart, addToCart }}>
+          {renderView()}
+        </ProductContext.Provider>
       </BackToShopContext.Provider>
     </div>
   );

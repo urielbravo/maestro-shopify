@@ -25,6 +25,7 @@ function CollectionProductDetail(props) {
               setCartProducts([
                 ...cartProducts,
                 {
+                  productId: props.productId,
                   productViewImage: props.productImage,
                   productViewTitle: props.productTitle,
                   productViewPrice: props.productPrice,
