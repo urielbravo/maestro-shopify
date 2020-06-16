@@ -36,7 +36,7 @@ function Cart(props) {
       <p>Cart</p>
       <div className="cart-product">{displayProducts}</div>
       <div className="cart-subtotal">
-        <p>Subtotal({cartProducts.length})</p>
+        <p>Subtotal ({cartProducts.length} {cartProducts.length > 1 ? "items" : "item" })</p>
         <p>${cartProducts.reduce((a, b) => +a + +b.productViewPrice, 0)}</p>
       </div>
       <OrderForm />

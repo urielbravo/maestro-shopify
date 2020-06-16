@@ -9,13 +9,7 @@ import { BackToShopContext } from "./BackToShopContext";
 function CollectionDisplay(props) {
   const [ChosenProduct, setChosenProduct] = useState("");
   const [cartToggle, setCartToggle] = useState(false);
-  const [cart, setCart] = useState([]);
   const [backToShop, setbackToShop] = useState(true);
-
-  function addToCart(item) {
-    setCart([...cart, item]);
-    console.log(cart);
-  }
 
   let collection = props.collections.find((obj) => {
     return obj.node.id === props.collectionID;
@@ -85,15 +79,14 @@ function CollectionDisplay(props) {
           className="cart-icon"
           onClick={() => {
             setCartToggle(!cartToggle);
+            setChosenProduct("");
           }}
         >
-          {cartToggle ? <span>&lt; GO BACK</span> : "CART"}
+          {cartToggle ? <span>&lt; BACK TO STORE</span> : "CART"}
         </p>
       </section>
       <BackToShopContext.Provider value={{ backToShop, setbackToShop }}>
-        <ProductContext.Provider value={{ cart, addToCart }}>
-          {renderView()}
-        </ProductContext.Provider>
+        {renderView()}
       </BackToShopContext.Provider>
     </div>
   );

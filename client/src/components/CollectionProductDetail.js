@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import ProductView from "./ProductView";
 import { BackToShopContext } from "./BackToShopContext";
 import { CartProductsContext } from "./CartProductsContext";
@@ -9,6 +9,16 @@ function CollectionProductDetail(props) {
   const { backToShop, setbackToShop } = useContext(BackToShopContext);
 
   const { cartProducts, setCartProducts } = useContext(CartProductsContext);
+
+  // check if product is already added to the cart, if it is, disable "add to cart" button
+  const addToCartButton = document.querySelector("#add-to-cart");
+  const foundProduct = cartProducts.filter(product => product.productId === props.productId)
+
+  useEffect(() => {
+    if (foundProduct && addToCartButton) {
+      addToCartButton.disabled = true;
+    }
+  },[cartProducts, ])
 
   return (
     <div>
@@ -21,6 +31,7 @@ function CollectionProductDetail(props) {
       {buyProduct === "" ? (
         <>
           <button
+            id="add-to-cart"
             onClick={() => {
               setCartProducts([
                 ...cartProducts,
@@ -149,9 +160,7 @@ function CollectionProductDetail(props) {
           </section>
         </>
       )}
-      {/* <ProductContext.Provider value={toCart} style={{ Display: "none" }} >
-        <Cart  />
-      </ProductContext.Provider> */}
+      {console.log(`this is the value of find product: ${JSON.stringify(cartProducts)}`)}
     </div>
   );
 }
