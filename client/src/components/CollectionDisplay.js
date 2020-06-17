@@ -3,7 +3,6 @@ import CollectionProduct from "./CollectionProduct";
 import CollectionProductDetail from "./CollectionProductDetail";
 import Cart from "./Cart";
 import "../styles/CollectionDisplay.css";
-import { ProductContext } from "./ProductContext";
 import { BackToShopContext } from "./BackToShopContext";
 
 function CollectionDisplay(props) {
