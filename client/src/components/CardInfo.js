@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Confirmation from "./Confirmation";
+import axios from "axios";
 
 function CardInfo(props) {
   const [cardInfo, setCardInfo] = useState(false);
+  const [checkout, setCheckout] = useState("")
 
   let changecardInfo = (cardInfoChange) => {
     setCardInfo(cardInfoChange)
@@ -10,9 +12,28 @@ function CardInfo(props) {
 
   let shippinginfo = props.inputInfo
 
+
+  useEffect(() => {
+    axios.post("https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json", props.checkoutRequestData,
+      {
+        headers: {
+          "X-Shopify-Access-Token":"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",
+          "Content-Type": "application/json",
+          "X-Host-Override": "maestro-store-1.myshopify.com"
+        }
+      }
+    )
+    .then((res) => {
+      setCheckout(res.data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+},[])
+
   return (
     <>
-    
+      {console.log(`this is the axios response: ${JSON.stringify(checkout.checkout)}`)}
       {cardInfo ? (
         <Confirmation 
         productVariantId={props.productVariantId}

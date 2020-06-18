@@ -1,55 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../styles/OrderForm.css";
 import CardInfo from "./CardInfo";
 import { useInput } from '../hooks/input-hook';
-import axios from "axios";
+
 
 
 function OrderForm(props) {
   const [buyState, setBuyState] = useState(false)
-  const [checkout, setCheckout] = useState("")
-
-
-let checkoutRequestData = {
-  "checkout": {
-    "email": "john.smith@example.com",
-    "line_items": [
-      {
-        "variant_id": 34501861769382,
-        "quantity": 1
-      }
-    ],
-    "shipping_address": {
-      "first_name": "uriel",
-      "last_name": "kito",
-      "address1": "hi kito",
-      "city": "hermosillo",
-      "province_code": "ON",
-      "country_code": "CA",
-      "phone": "(123)456-7890",
-      "zip": "K1N 5T5"
-    }
-  }
-}
-
-  useEffect(() => {
-      axios.post("https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json", checkoutRequestData,
-        {
-          headers: {
-            "X-Shopify-Access-Token":"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",
-            "Content-Type": "application/json",
-            "X-Host-Override": "maestro-store-1.myshopify.com"
-          }
-        }
-      )
-      .then((res) => {
-        setCheckout(res.data)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  },[])
-
 
   // input forms values
   const { value:first_name, bind:bindfirst_name} = useInput('');
@@ -65,29 +22,39 @@ let checkoutRequestData = {
     setBuyState(buyStateChange)
   }
 
-let inputInfo = {
-  first_name,
-  last_name,
-  address1,
-  city,
-  province_code,
-  zip,
-  phone,
-  email
+let checkoutRequestData = {
+  "checkout": {
+    email,
+    "line_items": [
+      {
+        "variant_id": 34501861769382,
+        "quantity": 1
+      }
+    ],
+    "shipping_address": {
+      first_name,
+      last_name,
+      address1,
+      city,
+      province_code,
+      "country_code": "US",
+      phone,
+      zip
+    }
+  }
 }
-
 
 
   return (
     <>
-      {console.log(`this is the checkout object ${JSON.stringify(checkout)}`)}
       {buyState ? (
         <CardInfo 
         productVariantId={props.productVariantId}
         productTitle={props.productTitle}
         productPrice={props.productPrice}
         changeBuyState={changeBuyState}
-        inputInfo={inputInfo}
+        // inputInfo={inputInfo}
+        checkoutRequestData={checkoutRequestData}
         />
       ) : (
         <>
