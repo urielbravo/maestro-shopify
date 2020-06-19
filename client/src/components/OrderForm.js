@@ -9,14 +9,14 @@ function OrderForm(props) {
   const [buyState, setBuyState] = useState(false)
 
   // input forms values
-  const { value:first_name, bind:bindfirst_name} = useInput('');
-  const { value:last_name, bind:bindlast_name} = useInput('');
-  const { value:address1, bind:bindaddress1} = useInput('');
-  const { value:city, bind:bindcity} = useInput('');
-  const { value:province_code, bind:bindprovince_code} = useInput('');
-  const { value:zip, bind:bindzip} = useInput('');
-  const { value:phone, bind:bindphone} = useInput('');
-  const { value:email, bind:bindemail} = useInput('');
+  const { value:first_name, bind:bindfirst_name} = useInput('asdasd');
+  const { value:last_name, bind:bindlast_name} = useInput('asdasd');
+  const { value:address1, bind:bindaddress1} = useInput('asdasd');
+  const { value:city, bind:bindcity} = useInput('asdasd');
+  const { value:province_code, bind:bindprovince_code} = useInput('az');
+  const { value:zip, bind:bindzip} = useInput('85820');
+  const { value:phone, bind:bindphone} = useInput('6421612165');
+  const { value:email, bind:bindemail} = useInput('azazueta@alioit.com');
 
   let changeBuyState = (buyStateChange) => {
     setBuyState(buyStateChange)
