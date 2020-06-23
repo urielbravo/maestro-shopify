@@ -1,46 +1,153 @@
 import React, { useState, useEffect } from "react";
+import { useInput } from "../hooks/input-hook";
 import Confirmation from "./Confirmation";
 import axios from "axios";
+import * as R from "ramda";
 
 function CardInfo(props) {
   const [cardInfo, setCardInfo] = useState(false);
-  const [checkout, setCheckout] = useState("")
+  const [checkout, setCheckout] = useState("");
+  const [amount, setAmount] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [token, setToken] = useState("");
+  const [sessionId, setSessionId] = useState("");
+
+  // input forms values
+  const { value: number, bind: bindnumber } = useInput("1");
+  const { value: month, bind: bindmonth } = useInput("12");
+  const { value: year, bind: bindyear } = useInput("2024");
+  const { value: verification_value, bind: bindverification_value } = useInput(
+    "111"
+  );
 
   let changecardInfo = (cardInfoChange) => {
-    setCardInfo(cardInfoChange)
-  }
+    setCardInfo(cardInfoChange);
+  };
 
-  let shippinginfo = props.inputInfo
+  const handleCardData = async () => {
+    const cardTemp = {
+      payment: {
+        amount: amount,
+        unique_token: "30bcc15a-57b1-4e9d-b422-32b1d236fb9b",
+        credit_card: {
+          number: number,
+          month: month,
+          year: year,
+          verification_value: verification_value,
+          first_name: firstName,
+          last_name: lastName,
+        },
+      },
+    };
 
+    try {
+      const response = await axios.post(
+        "https://elb.deposit.shopifycs.com/sessions",
+        cardTemp,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      console.log("changecardInfo response", response.data.id);
+      setSessionId(
+        R.hasPath(["data", "id"], response) && R.path(["data", "id"], response)
+      );
+    } catch (err) {
+      console.log("err: ", err);
+    } finally {
+      changecardInfo(!cardInfo);
+    }
+  };
+
+  let shippinginfo = props.inputInfo;
 
   useEffect(() => {
-    axios.post("https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json", props.checkoutRequestData,
-      {
-        headers: {
-          "X-Shopify-Access-Token":"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",
-          "Content-Type": "application/json",
-          "X-Host-Override": "maestro-store-1.myshopify.com"
+    axios
+      .post(
+        "https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json",
+        props.checkoutRequestData,
+        {
+          headers: {
+            "X-Shopify-Access-Token": "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",
+            "Content-Type": "application/json",
+            "X-Host-Override": "maestro-store-1.myshopify.com",
+          },
         }
-      }
-    )
-    .then((res) => {
-      setCheckout(res.data)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-},[])
+      )
+      .then(async (res) => {
+        setCheckout(res.data);
+        console.log(res);
+        setAmount(
+          R.hasPath(["data", "checkout", "total_price"], res) &&
+            R.path(["data", "checkout", "total_price"], res)
+        );
+        setFirstName(
+          R.hasPath(
+            ["data", "checkout", "shipping_address", "first_name"],
+            res
+          ) &&
+            R.path(["data", "checkout", "shipping_address", "first_name"], res)
+        );
+        setLastName(
+          (R.hasPath(
+            ["data", "checkout", "shipping_address", "last_name"],
+            res
+          ) &&
+            R.path(
+              ["data", "checkout", "shipping_address", "last_name"],
+              res
+            )) ||
+            ""
+        );
+
+        setToken(
+          (R.hasPath(["data", "checkout", "token"], res) &&
+            R.path(["data", "checkout", "token"], res)) ||
+            ""
+        );
+
+        const token = R.hasPath(["data", "checkout", "token"], res);
+        if (token) {
+          const response = await axios.get(
+            `https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts/${R.path(
+              ["data", "checkout", "token"],
+              res
+            )}/shipping_rates.json`,
+            {
+              headers: {
+                "X-Shopify-Access-Token":
+                  "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",
+                "Content-Type": "application/json",
+                "X-Host-Override": "maestro-store-1.myshopify.com",
+              },
+            }
+          );
+        } else {
+          alert("Algo Salio Mal");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <>
       {console.log(`this is the axios response: ${JSON.stringify(checkout)}`)}
       {cardInfo ? (
-        <Confirmation 
-        productVariantId={props.productVariantId}
-        productTitle={props.productTitle}
-        productPrice={props.productPrice}
-        changecardInfo={changecardInfo}
-        shippinginfo={shippinginfo}
+        <Confirmation
+          productVariantId={props.productVariantId}
+          productTitle={props.productTitle}
+          productPrice={props.productPrice}
+          changecardInfo={changecardInfo}
+          shippinginfo={shippinginfo}
+          Token={token}
+          Amount={amount}
+          SessionId={sessionId}
         />
       ) : (
         <>
@@ -53,17 +160,34 @@ function CardInfo(props) {
                   Credit/Debit Card
                   <input
                     type="text"
-                    name="card-number"
-                    id="card-number"
+                    name="number"
+                    id="number"
                     placeholder="Card Number"
+                    {...bindnumber}
                   />
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <input
+                      type="text"
+                      name="expiration"
+                      id="expiration"
+                      placeholder="Expiration MM"
+                      {...bindmonth}
+                    />
+                    <input
+                      type="text"
+                      name="expiration"
+                      id="expiration"
+                      placeholder="Expiration YYYY"
+                      {...bindyear}
+                    />
+                  </div>
                   <input
                     type="text"
-                    name="expiration"
-                    id="expiration"
-                    placeholder="Expiration MM/YY"
+                    name="cvc"
+                    id="cvc"
+                    placeholder="CVC"
+                    {...bindverification_value}
                   />
-                  <input type="text" name="cvc" id="cvc" placeholder="CVC" />
                 </label>
               </form>
             </div>
@@ -82,7 +206,7 @@ function CardInfo(props) {
               <p>Total</p>
               <p id="total">{`$${Number(props.productPrice) + 5.29}`}</p>
             </div>
-            <button onClick={() => setCardInfo(!cardInfo)}>Continue</button>
+            <button onClick={() => handleCardData()}>Continue</button>
             <button onClick={() => props.changeBuyState(false)}>Go Back</button>
           </section>
         </>
