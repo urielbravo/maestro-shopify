@@ -49,9 +49,10 @@ class App extends React.Component {
             id
             title
             description
-            variants(first: 3){
+            variants(first: 10){
               edges {
                 node{
+                  title
                   price
                   id
                 }
@@ -157,7 +158,10 @@ class App extends React.Component {
     return (
       <CartProductsProvider>
         <div className="App">
-          <SettingsPanel />
+          <SettingsPanel 
+            storefrontContext={this.context}
+            overlayProducts={this.state.products}
+          />
           <div className="right-side">
             <ProductSettingsPanel
               products={this.state.products}

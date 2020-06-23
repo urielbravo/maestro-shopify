@@ -33,7 +33,7 @@ function CardInfo(props) {
 
   return (
     <>
-      {console.log(`this is the axios response: ${JSON.stringify(checkout.checkout)}`)}
+      {console.log(`this is the axios response: ${JSON.stringify(checkout)}`)}
       {cardInfo ? (
         <Confirmation 
         productVariantId={props.productVariantId}
