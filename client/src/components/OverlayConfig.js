@@ -1,12 +1,50 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/OverlayConfig.css";
+import * as R from "ramda";
 
 function OverlayConfig(props) {
-  let products;
+  const [produtId, setProdutId] = useState("");
+  // const [variants, setVariants] = useState([])
+
+  // get every product to show in an option
+  let products = props.overlayProducts.map((product) => {
+    return (
+      <option key={product.node.id} value={product.node.id}>
+        {product.node.title}
+      </option>
+    );
+  });
+
+  // get the selected product from options
+  let getSelectedProductId = (e) => {
+    setProdutId(e.target.value);
+  };
+
+  // find selected product from options
+  let selectedProduct = props.overlayProducts.filter((obj) => {
+    return obj.node.id === produtId;
+  });
+
+
+  // validates a product has been selected
+  let hasProductSelected = R.hasPath(
+    [0, "node", "variants", "edges"],
+    selectedProduct
+  );
+
+  let renderVariants = () => {
+    if (hasProductSelected) {
+      return selectedProduct[0].node.variants.edges.map((variant) => (
+        <option key={variant.node.id} value={variant.node.id}>
+          {variant.node.title}
+        </option>
+      ));
+    }
+  };
 
   return (
     <div className="overlay-config-panel-container">
-      {console.log(`products: ${JSON.stringify(props.overlayProducts)}`)}
+      {console.log(selectedProduct)}
       <div className="connected-store">
         <label htmlFor="store">CONNECTED STORE</label>
         <input
@@ -22,21 +60,29 @@ function OverlayConfig(props) {
       </div>
       <div className="overlay-product">
         <label htmlFor="overlay-product">PRODUCT</label>
-        <input type="text" name="overlay-product" id="overlay-product" />
+        <select
+          onChange={getSelectedProductId}
+          name="overlay-product"
+          id="overlay-product"
+        >
+          {products}
+        </select>
       </div>
       <div className="overlay-variant">
         <label htmlFor="overlay-variant">VARIANT</label>
-        <input type="text" name="overlay-variant" id="overlay-variant" />
+        <select name="overlay-variant" id="overlay-variant">
+          {renderVariants()}
+        </select>
       </div>
       <div className="overlay-preview-container">
         <img
           id="overlay-preview-image"
-          src="https://picsum.photos/id/237/200"
-          alt="dog image"
+          src={hasProductSelected ? selectedProduct[0].node.images.edges[0].node.originalSrc : null}
+          alt={hasProductSelected ? selectedProduct[0].node.images.edges[0].node.altText : null}
         />
         <div className="overlay-preview-text">
-          <p>Nasti Gal limited edition t-shit 2020</p>
-          <p style={{ marginTop:"0.5em" }}>$19.99</p>
+          <p>{hasProductSelected ? selectedProduct[0].node.title : "select a product to see preview"}</p>
+          <p style={{ marginTop: "0.5em" }}>$19.99</p>
         </div>
       </div>
       <div className="overlay-duration">
