@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../styles/OverlayConfig.css";
 import * as R from "ramda";
 
 function OverlayConfig(props) {
   const [produtId, setProdutId] = useState("");
-  // const [variants, setVariants] = useState([])
+  const [variantId, setVariantId] = useState("");
 
   // get every product to show in an option
   let products = props.overlayProducts.map((product) => {
@@ -25,12 +25,13 @@ function OverlayConfig(props) {
     return obj.node.id === produtId;
   });
 
-
   // validates a product has been selected
   let hasProductSelected = R.hasPath(
     [0, "node", "variants", "edges"],
     selectedProduct
   );
+
+ 
 
   let renderVariants = () => {
     if (hasProductSelected) {
@@ -42,9 +43,25 @@ function OverlayConfig(props) {
     }
   };
 
+  let getSelectedVariantId = (e) => {
+    setVariantId(e.target.value);
+  };
+
+  let selectedVariant = () => {
+    if (hasProductSelected) {
+      return selectedProduct[0].node.variants.edges.find((obj) => {
+        return obj.node.id === variantId;
+      });
+    }
+  };
+
+  // validates that a variant has been selected
+  let hasVariantSelected = R.hasPath(["node"], selectedVariant());
+
   return (
     <div className="overlay-config-panel-container">
-      {console.log(selectedProduct)}
+      {/* {hasProductSelected ? console.log(`object id: ${JSON.stringify(selectedProduct[0].node.variants.edges)} state variantId:${variantId}`) : null} */}
+      {console.log(selectedVariant(), hasVariantSelected)}
       <div className="connected-store">
         <label htmlFor="store">CONNECTED STORE</label>
         <input
@@ -65,24 +82,48 @@ function OverlayConfig(props) {
           name="overlay-product"
           id="overlay-product"
         >
+          <option value="" selected disabled hidden>
+            Choose a product
+          </option>
           {products}
         </select>
       </div>
       <div className="overlay-variant">
         <label htmlFor="overlay-variant">VARIANT</label>
-        <select name="overlay-variant" id="overlay-variant">
+        <select
+          onChange={getSelectedVariantId}
+          name="overlay-variant"
+          id="overlay-variant"
+        >
+          <option value="" selected disabled hidden>
+            Choose a variant
+          </option>
           {renderVariants()}
         </select>
       </div>
       <div className="overlay-preview-container">
         <img
           id="overlay-preview-image"
-          src={hasProductSelected ? selectedProduct[0].node.images.edges[0].node.originalSrc : null}
-          alt={hasProductSelected ? selectedProduct[0].node.images.edges[0].node.altText : null}
+          src={
+            hasProductSelected
+              ? selectedProduct[0].node.images.edges[0].node.originalSrc
+              : null
+          }
+          alt={
+            hasProductSelected
+              ? selectedProduct[0].node.images.edges[0].node.altText
+              : null
+          }
         />
         <div className="overlay-preview-text">
-          <p>{hasProductSelected ? selectedProduct[0].node.title : "select a product to see preview"}</p>
-          <p style={{ marginTop: "0.5em" }}>$19.99</p>
+          <p>
+            {hasProductSelected
+              ? selectedProduct[0].node.title
+              : "select a product to see preview"}
+          </p>
+          <p style={{ marginTop: "0.5em" }}>
+            {hasVariantSelected ? `$${selectedVariant().node.price}` : ""}
+          </p>
         </div>
       </div>
       <div className="overlay-duration">
