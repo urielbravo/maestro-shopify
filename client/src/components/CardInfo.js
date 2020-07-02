@@ -68,29 +68,23 @@ function CardInfo(props) {
   useEffect(() => {
     axios
       .post(
-        "https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json",
-        props.checkoutRequestData,
-        {
-          headers: {
-            "X-Shopify-Access-Token": "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",
-            "Content-Type": "application/json",
-            "X-Host-Override": "maestro-store-1.myshopify.com",
-          },
-        }
+        "http://localhost:5000/admin/checkout",
+        //"https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json",
+        props.checkoutRequestData
       )
       .then(async (res) => {
         setCheckout(res.data);
         console.log(res);
         setAmount(
           R.hasPath(["data", "checkout", "total_price"], res) &&
-            R.path(["data", "checkout", "total_price"], res)
+          R.path(["data", "checkout", "total_price"], res)
         );
         setFirstName(
           R.hasPath(
             ["data", "checkout", "shipping_address", "first_name"],
             res
           ) &&
-            R.path(["data", "checkout", "shipping_address", "first_name"], res)
+          R.path(["data", "checkout", "shipping_address", "first_name"], res)
         );
         setLastName(
           (R.hasPath(
@@ -101,13 +95,13 @@ function CardInfo(props) {
               ["data", "checkout", "shipping_address", "last_name"],
               res
             )) ||
-            ""
+          ""
         );
 
         setToken(
           (R.hasPath(["data", "checkout", "token"], res) &&
             R.path(["data", "checkout", "token"], res)) ||
-            ""
+          ""
         );
 
         const token = R.hasPath(["data", "checkout", "token"], res);
@@ -150,67 +144,67 @@ function CardInfo(props) {
           SessionId={sessionId}
         />
       ) : (
-        <>
-          <section className="order-form">
-            <h3 id="order-form-text">Card info</h3>
-            <hr />
-            <div className="info-input">
-              <form action="">
-                <label htmlFor="credit-debit-card" id="creadit-debit-card-text">
-                  Credit/Debit Card
+          <>
+            <section className="order-form">
+              <h3 id="order-form-text">Card info</h3>
+              <hr />
+              <div className="info-input">
+                <form action="">
+                  <label htmlFor="credit-debit-card" id="creadit-debit-card-text">
+                    Credit/Debit Card
                   <input
-                    type="text"
-                    name="number"
-                    id="number"
-                    placeholder="Card Number"
-                    {...bindnumber}
-                  />
-                  <div style={{ display: "flex", flexDirection: "row" }}>
+                      type="text"
+                      name="number"
+                      id="number"
+                      placeholder="Card Number"
+                      {...bindnumber}
+                    />
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <input
+                        type="text"
+                        name="expiration"
+                        id="expiration"
+                        placeholder="Expiration MM"
+                        {...bindmonth}
+                      />
+                      <input
+                        type="text"
+                        name="expiration"
+                        id="expiration"
+                        placeholder="Expiration YYYY"
+                        {...bindyear}
+                      />
+                    </div>
                     <input
                       type="text"
-                      name="expiration"
-                      id="expiration"
-                      placeholder="Expiration MM"
-                      {...bindmonth}
+                      name="cvc"
+                      id="cvc"
+                      placeholder="CVC"
+                      {...bindverification_value}
                     />
-                    <input
-                      type="text"
-                      name="expiration"
-                      id="expiration"
-                      placeholder="Expiration YYYY"
-                      {...bindyear}
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    name="cvc"
-                    id="cvc"
-                    placeholder="CVC"
-                    {...bindverification_value}
-                  />
-                </label>
-              </form>
-            </div>
-          </section>
-          <section className="summary">
-            <h4 id="summary-text">Summary</h4>
-            <div className="summary-product">
-              <p>{props.productTitle}</p>
-              <p>{props.productPrice}</p>
-            </div>
-            <div className="summary-shipping">
-              <p>Shipping</p>
-              <p>$5.29</p>
-            </div>
-            <div className="summary-total">
-              <p>Total</p>
-              <p id="total">{`$${Number(props.productPrice) + 5.29}`}</p>
-            </div>
-            <button onClick={() => handleCardData()}>Continue</button>
-            <button onClick={() => props.changeBuyState(false)}>Go Back</button>
-          </section>
-        </>
-      )}
+                  </label>
+                </form>
+              </div>
+            </section>
+            <section className="summary">
+              <h4 id="summary-text">Summary</h4>
+              <div className="summary-product">
+                <p>{props.productTitle}</p>
+                <p>{props.productPrice}</p>
+              </div>
+              <div className="summary-shipping">
+                <p>Shipping</p>
+                <p>$5.29</p>
+              </div>
+              <div className="summary-total">
+                <p>Total</p>
+                <p id="total">{`$${Number(props.productPrice) + 5.29}`}</p>
+              </div>
+              <button onClick={() => handleCardData()}>Continue</button>
+              <button onClick={() => props.changeBuyState(false)}>Go Back</button>
+            </section>
+          </>
+        )}
     </>
   );
 }

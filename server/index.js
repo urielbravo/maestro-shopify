@@ -2,6 +2,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 const Router = require('koa-router');
 const axios = require('axios');
+const R = require('ramda');
+const mockSession = require('./mockSession');
 
 const {
     SHOPIFY_API_SECRET_KEY,
@@ -11,76 +13,126 @@ const {
 
 module.exports = function (app) {
     const router = new Router();
-    console.log('start Shopify Auth Callback module');
+    console.log('Start Shopify Auth Callback module');
 
-    router.get('/callback', async (ctx) => {
+    router.get('/callback', async (ctx, next) => {
 
         if (typeof (ctx.request.query.code) == 'undefined')
             ctx.throw(401, 'Missing code in querystring.', {});
 
-        let code = ctx.request.query.code;
+        const code = ctx.request.query.code;
 
         // TODO: validate shop
         if (typeof (ctx.request.query.shop) == 'undefined')
             ctx.throw(401, 'Missing shop in querystring.', {});
 
-        let shop = ctx.request.query.shop;
+        const shop = ctx.request.query.shop;
 
-        console.log('send request to get access token');
-        console.log('shop: ' + shop);
-        console.log('code: ' + code);
+        console.log('Send request to get access token');
+        console.log('Shop: ' + shop);
+        console.log('Code: ' + code);
 
-        let token = await getStoreFrontAccessToken(shop, code);
-        // ctx.body = { storefront_access_token: token }
-        ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${token}&shop=${shop}`);
+        const httpClient = createHttpClient(shop);
 
+        let access_token = await R.compose(
+            R.partial(logReceivedData, ['Received access_token']),
+            R.partial(getDataFromResponse, [["data", "access_token"]]),
+            getShopifyAccessToken
+        )(httpClient, {
+            client_id: SHOPIFY_API_KEY,
+            client_secret: SHOPIFY_API_SECRET_KEY,
+            code: code
+        });
+
+        let storefront_access_token = await R.compose(
+            R.partial(logReceivedData, ['Received storefront_access_token']),
+            R.partial(getDataFromResponse, [["data", "storefront_access_token", "access_token"]]),
+            getShopifyStoreFrontAccessToken
+        )(httpClient, access_token);
+
+        saveTokensInSession({ access_token, storefront_access_token, shop });
+
+        ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${storefront_access_token}&shop=${shop}`);
+    });
+
+    router.post('/admin/checkout', async (ctx) => {
+        const { access_token, shop } = getTokensFromSession();
+
+        const httpClient = R.compose(
+            R.partial(createHttpClientWithHeader, [shop]),
+            createCheckoutHeader
+        )(access_token, shop);
+
+        let response = await R.compose(
+            R.partial(logReceivedData, ['Received checkout info']),
+            R.partial(getDataFromResponse, [["data"]]),
+            startShopifyCheckout
+        )(httpClient, ctx.request.body);
+
+        ctx.body = response;
     });
 
     app.use(router.routes());
 }
 
-function getStoreFrontAccessToken(shop, code) {
-    let accessToken;
-    let storeFrontAccessToken;
-
-    const httpClient = axios.create({
+function createHttpClient(shop) {
+    return axios.create({
         baseURL: `https://${shop}`,
     });
+}
 
-    // request access_token
-    return httpClient.post('/admin/oauth/access_token', {
-        client_id: SHOPIFY_API_KEY,
-        client_secret: SHOPIFY_API_SECRET_KEY,
-        code: code
-    })
-        .then(function (response) {
-            accessToken = response.data.access_token;
+function createHttpClientWithHeader(shop, header) {
+    return axios.create({
+        baseURL: `https://${shop}`,
+        headers: header
+    });
+}
 
-            // TODO: save access_token
-            console.log('received access_token: ');
-            console.log(accessToken);
+function getShopifyAccessToken(httpClient, payload) {
+    return httpClient.post('/admin/oauth/access_token', payload);
+}
 
-            // request storefront_access_tokens
-            return httpClient.post('/admin/api/2020-04/storefront_access_tokens.json', {
-                "access_token": accessToken,
-                "storefront_access_token": {
-                    "title": "Maestro"
-                }
-            })
-                .then(function (response) {
-                    storeFrontAccessToken = response.data.storefront_access_token.access_token;
+function getShopifyStoreFrontAccessToken(httpClient, accessToken) {
+    // request storefront_access_tokens
+    return httpClient.post('/admin/api/2020-04/storefront_access_tokens.json', {
+        "access_token": accessToken,
+        "storefront_access_token": {
+            "title": "Maestro"
+        }
+    });
+}
 
-                    console.log('received storefrontaccesstoken: ');
-                    console.log(storeFrontAccessToken);
-                    return storeFrontAccessToken;
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
-        })
-        .catch(function (error) {
-            // handle error
-            console.log(error);
+function startShopifyCheckout(httpClient, payload) {
+    return httpClient.post("/admin/checkouts.json", payload)
+}
+
+function createCheckoutHeader(access_token, shop) {
+    return {
+        "X-Shopify-Access-Token": access_token,
+        "Content-Type": "application/json",
+        "X-Host-Override": shop,
+    };
+}
+
+function logReceivedData(msg, promise) {
+    return promise
+        .then((data) => {
+            console.log(`${msg}: ${data}`);
+            return data;
         });
+}
+
+function getDataFromResponse(path, promise) {
+    return promise
+        .then((response) => R.path(path, response))
+        .catch((error) => console.error(error));
+}
+
+function saveTokensInSession(tokens) {
+    //ctx.cookies.set('tokens', ctx.tokens.access_token, { signed: true, httpOnly: false });
+    mockSession.tokens = tokens;
+}
+
+function getTokensFromSession() {
+    return mockSession.tokens;
 }

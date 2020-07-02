@@ -11,7 +11,7 @@ import { StorefrontContext } from "./components/StorefrontContext";
 import axios from "axios";
 import { CartProductsProvider } from "./components/CartProductsContext";
 
-const SHOP = "maestro-store-1";
+// const SHOP = "maestro-store-1";
 
 class App extends React.Component {
   static contextType = StorefrontContext;
@@ -37,7 +37,7 @@ class App extends React.Component {
     let storefrontContext = this.context;
     axios
       .post(
-        `https://${SHOP}.myshopify.com/api/graphql`,
+        `https://${storefrontContext.shop}/api/graphql`,
         {
           query: `{
             shop {
