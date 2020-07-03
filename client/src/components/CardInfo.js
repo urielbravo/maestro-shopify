@@ -29,7 +29,7 @@ function CardInfo(props) {
     const cardTemp = {
       payment: {
         amount: amount,
-        unique_token: "30bcc15a-57b1-4e9d-b422-32b1d236fb9b",
+        unique_token: "30bcc15a-57b1-4e9d-b422-32b1d236fb9b", //client-side-idempotency-token
         credit_card: {
           number: number,
           month: month,
@@ -68,7 +68,7 @@ function CardInfo(props) {
   useEffect(() => {
     axios
       .post(
-        "http://localhost:5000/admin/checkout",
+        "http://localhost:5000/admin/checkouts",
         //"https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json",
         props.checkoutRequestData
       )
@@ -104,22 +104,10 @@ function CardInfo(props) {
           ""
         );
 
-        const token = R.hasPath(["data", "checkout", "token"], res);
-        if (token) {
-          const response = await axios.get(
-            `https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts/${R.path(
-              ["data", "checkout", "token"],
-              res
-            )}/shipping_rates.json`,
-            {
-              headers: {
-                "X-Shopify-Access-Token":
-                  "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",
-                "Content-Type": "application/json",
-                "X-Host-Override": "maestro-store-1.myshopify.com",
-              },
-            }
-          );
+        if (R.hasPath(["data", "checkout", "token"], res)) {
+          // https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts/{token}/shipping_rates.json
+          const token = R.path(["data", "checkout", "token"], res);
+          const response = await axios.get(`http://localhost:5000/admin/checkouts/${token}/shipping_rates`);
         } else {
           alert("Algo Salio Mal");
         }

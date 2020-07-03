@@ -1,9 +1,9 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const Router = require('koa-router');
-const axios = require('axios');
 const R = require('ramda');
 const mockSession = require('./mockSession');
+const shopifyHelper = require('./shopifyHelper');
 
 const {
     SHOPIFY_API_SECRET_KEY,
@@ -37,7 +37,7 @@ module.exports = function (app) {
         let access_token = await R.compose(
             R.partial(logReceivedData, ['Received access_token']),
             R.partial(getDataFromResponse, [["data", "access_token"]]),
-            getShopifyAccessToken
+            shopifyHelper.getShopifyAccessToken
         )(httpClient, {
             client_id: SHOPIFY_API_KEY,
             client_secret: SHOPIFY_API_SECRET_KEY,
@@ -47,7 +47,7 @@ module.exports = function (app) {
         let storefront_access_token = await R.compose(
             R.partial(logReceivedData, ['Received storefront_access_token']),
             R.partial(getDataFromResponse, [["data", "storefront_access_token", "access_token"]]),
-            getShopifyStoreFrontAccessToken
+            shopifyHelper.getShopifyStoreFrontAccessToken
         )(httpClient, access_token);
 
         saveTokensInSession({ access_token, storefront_access_token, shop });
@@ -55,63 +55,41 @@ module.exports = function (app) {
         ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${storefront_access_token}&shop=${shop}`);
     });
 
-    router.post('/admin/checkout', async (ctx) => {
+    router.post('/admin/checkouts', async (ctx) => {
         const { access_token, shop } = getTokensFromSession();
 
         const httpClient = R.compose(
-            R.partial(createHttpClientWithHeader, [shop]),
-            createCheckoutHeader
+            R.partial(shopifyHelper.createHttpClientWithHeader, [shop]),
+            shopifyHelper.createCheckoutHeader
         )(access_token, shop);
 
         let response = await R.compose(
             R.partial(logReceivedData, ['Received checkout info']),
             R.partial(getDataFromResponse, [["data"]]),
-            startShopifyCheckout
+            shopifyHelper.startShopifyCheckout
         )(httpClient, ctx.request.body);
 
         ctx.body = response;
     });
 
+    router.get('/admin/checkouts/:token/shipping_rates', async (ctx) => {
+        const { access_token, shop } = getTokensFromSession();
+
+        const httpClient = R.compose(
+            R.partial(shopifyHelper.createHttpClientWithHeader, [shop]),
+            shopifyHelper.createCheckoutHeader
+        )(access_token, shop);
+
+        let response = await R.compose(
+            R.partial(logReceivedData, ['Received shipping rate']),
+            R.partial(getDataFromResponse, [["data"]]),
+            R.partial(shopifyHelper.getShippingRates, [httpClient])
+        )(ctx.params.token);
+
+        ctx.body = response;
+    });
+
     app.use(router.routes());
-}
-
-function createHttpClient(shop) {
-    return axios.create({
-        baseURL: `https://${shop}`,
-    });
-}
-
-function createHttpClientWithHeader(shop, header) {
-    return axios.create({
-        baseURL: `https://${shop}`,
-        headers: header
-    });
-}
-
-function getShopifyAccessToken(httpClient, payload) {
-    return httpClient.post('/admin/oauth/access_token', payload);
-}
-
-function getShopifyStoreFrontAccessToken(httpClient, accessToken) {
-    // request storefront_access_tokens
-    return httpClient.post('/admin/api/2020-04/storefront_access_tokens.json', {
-        "access_token": accessToken,
-        "storefront_access_token": {
-            "title": "Maestro"
-        }
-    });
-}
-
-function startShopifyCheckout(httpClient, payload) {
-    return httpClient.post("/admin/checkouts.json", payload)
-}
-
-function createCheckoutHeader(access_token, shop) {
-    return {
-        "X-Shopify-Access-Token": access_token,
-        "Content-Type": "application/json",
-        "X-Host-Override": shop,
-    };
 }
 
 function logReceivedData(msg, promise) {

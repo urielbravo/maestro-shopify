@@ -10,7 +10,7 @@ function Confirmation(props) {
       payment: {
         amount: props.Amount,
         session_id: props.SessionId,
-        unique_token: "7ada5660-ede3-48a5-9eef-de6566bc0116",
+        unique_token: "7ada5660-ede3-48a5-9eef-de6566bc0116", //client-side-idempotency-token
       },
     };
 
