@@ -1,47 +1,54 @@
 const axios = require('axios');
+const R = require('ramda');
+
+const createHttpClient = (shop, accessToken) =>
+    R.ifElse(
+        R.isNil,
+        R.partial((shop) => axios.create({ baseURL: `https://${shop}` }), [shop]),
+        R.partial((shop) => axios.create({
+            baseURL: `https://${shop}`,
+            headers: {
+                "X-Shopify-Access-Token": accessToken,
+                "Content-Type": "application/json",
+                "X-Host-Override": shop,
+            }
+        }), [shop])
+    )(accessToken);
 
 module.exports = {
 
-    createHttpClient: function (shop) {
-        return axios.create({
-            baseURL: `https://${shop}`,
-        });
-    },
+    getShopifyAccessToken: ({shop, payload}) => R.compose(
+        R.partial((payload, httpClient) =>
+            httpClient.post('/admin/oauth/access_token', payload), [payload]),
+        createHttpClient
+    )(shop),
 
-    createHttpClientWithHeader: function (shop, header) {
-        return axios.create({
-            baseURL: `https://${shop}`,
-            headers: header
-        });
-    },
+    // request storefront_access_tokens
+    getShopifyStoreFrontAccessToken: ({shop, accessToken}) =>
+        R.compose(
+            R.partial((accessToken, httpClient) =>
+                httpClient.post('/admin/api/2020-04/storefront_access_tokens.json', {
+                    "access_token": accessToken,
+                    "storefront_access_token": {
+                        "title": "Maestro"
+                    }
+                }),
+                [accessToken]),
+            createHttpClient
+        )(shop),
 
-    getShopifyAccessToken: function (httpClient, payload) {
-        return httpClient.post('/admin/oauth/access_token', payload);
-    },
+    startShopifyCheckout: ({shop, accessToken, payload}) => R.compose(
+        R.partial((payload, httpClient) => httpClient.post("/admin/checkouts.json", payload), [payload]),
+        createHttpClient,
+    )(shop, accessToken),
 
-    getShopifyStoreFrontAccessToken: function (httpClient, accessToken) {
-        // request storefront_access_tokens
-        return httpClient.post('/admin/api/2020-04/storefront_access_tokens.json', {
-            "access_token": accessToken,
-            "storefront_access_token": {
-                "title": "Maestro"
-            }
-        });
-    },
+    getShippingRates: ({shop, accessToken, token}) => R.compose(
+        R.partial((token, httpClient) => httpClient.get(`/admin/checkouts/${token}/shipping_rates.json`), [token]),
+        createHttpClient,
+    )(shop, accessToken),
 
-    startShopifyCheckout: function (httpClient, payload) {
-        return httpClient.post("/admin/checkouts.json", payload)
-    },
-
-    getShippingRates: function (httpClient, token) {
-        return httpClient.get(`/admin/checkouts/${token}/shipping_rates.json`);
-    },
-
-    createCheckoutHeader: function (access_token, shop) {
-        return {
-            "X-Shopify-Access-Token": access_token,
-            "Content-Type": "application/json",
-            "X-Host-Override": shop,
-        };
-    }
+    createCheckoutPayment: ({shop, accessToken, token, payload}) => R.compose(
+        R.partial((token, payload, httpClient) => httpClient.post(`/admin/checkouts/${token}/payments.json`, payload), [token, payload]),
+        createHttpClient,
+    )(shop, accessToken)
 }

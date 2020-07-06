@@ -18,19 +18,10 @@ function Confirmation(props) {
 
     axios
       .post(
-        `https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts/${props.Token}/payments.json`,
-        dataTemp,
-        {
-          headers: {
-            "X-Shopify-Access-Token": "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",
-            "Content-Type": "application/json",
-            "X-Host-Override": "maestro-store-1.myshopify.com",
-          },
-        }
+        `http://localhost:5000/admin/checkouts/${props.Token}/payments`,
+        dataTemp
       )
-      .then(async (res) => {
-        console.log(res);
-      })
+      .then(async (res) => console.log(res))
       .catch((err) => console.log("err", err));
   }, []);
 
@@ -39,8 +30,8 @@ function Confirmation(props) {
       {confirmation ? (
         <Congrats />
       ) : (
-        <>
-          {/* {console.log(props.shippinginfo)}
+          <>
+            {/* {console.log(props.shippinginfo)}
           <section className="order-form">
             <h3 id="order-form-text">confirmation</h3>
             <hr />
@@ -104,8 +95,8 @@ function Confirmation(props) {
             </button>
             <button onClick={() => props.changecardInfo(false)}>Go Back</button>
           </section> */}
-        </>
-      )}
+          </>
+        )}
     </>
   );
 }
