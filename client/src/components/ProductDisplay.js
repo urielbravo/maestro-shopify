@@ -49,6 +49,7 @@ function ProductDisplay(props) {
             productViewTitle={product.node.title}
             productViewDescription={product.node.description}
             productViewPrice={product.node.variants.edges[0].node.price}
+            productVariants={product.node.variants.edges}
           />
         ) : (
           <span></span>

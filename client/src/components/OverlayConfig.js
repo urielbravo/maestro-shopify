@@ -61,7 +61,7 @@ function OverlayConfig(props) {
   return (
     <div className="overlay-config-panel-container">
       {/* {hasProductSelected ? console.log(`object id: ${JSON.stringify(selectedProduct[0].node.variants.edges)} state variantId:${variantId}`) : null} */}
-      {console.log(selectedVariant(), hasVariantSelected)}
+      {/* {console.log(selectedVariant(), hasVariantSelected)} */}
       <div className="connected-store">
         <label htmlFor="store">CONNECTED STORE</label>
         <input
