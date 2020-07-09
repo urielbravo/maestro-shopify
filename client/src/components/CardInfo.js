@@ -69,7 +69,6 @@ function CardInfo(props) {
     axios
       .post(
         "http://localhost:5000/admin/checkouts",
-        //"https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts.json",
         props.checkoutRequestData
       )
       .then(async (res) => {
@@ -105,7 +104,6 @@ function CardInfo(props) {
         );
 
         if (R.hasPath(["data", "checkout", "token"], res)) {
-          // https://cors-anywhere.herokuapp.com/https://maestro-store-1.myshopify.com/admin/checkouts/{token}/shipping_rates.json
           const token = R.path(["data", "checkout", "token"], res);
           const response = await axios.get(`http://localhost:5000/admin/checkouts/${token}/shipping_rates`);
         } else {

@@ -11,8 +11,6 @@ import { StorefrontContext } from "./components/StorefrontContext";
 import axios from "axios";
 import { CartProductsProvider } from "./components/CartProductsContext";
 
-// const SHOP = "maestro-store-1";
-
 class App extends React.Component {
   static contextType = StorefrontContext;
 

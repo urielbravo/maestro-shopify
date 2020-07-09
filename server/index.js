@@ -5,112 +5,83 @@ const R = require('ramda');
 const mockSession = require('./mockSession');
 const shopifyHelper = require('./shopifyHelper');
 
-const {
-    SHOPIFY_API_SECRET_KEY,
-    SHOPIFY_API_KEY,
-    FRONT_END_URL,
-} = process.env;
+const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, FRONT_END_URL } = process.env;
 
 module.exports = function (app) {
     const router = new Router();
     console.log('Start Shopify Auth Callback module');
 
-    router.get('/callback', async (ctx, next) => {
-
-        if (typeof (ctx.request.query.code) == 'undefined')
-            ctx.throw(401, 'Missing code in querystring.', {});
-
-        const code = ctx.request.query.code;
-
-        // TODO: validate shop
-        if (typeof (ctx.request.query.shop) == 'undefined')
-            ctx.throw(401, 'Missing shop in querystring.', {});
-
-        const shop = ctx.request.query.shop;
+    router.get('/callback', async (ctx) => {
 
         console.log('Send request to get access token');
-        console.log('Shop: ' + shop);
-        console.log('Code: ' + code);
+        const shop = getValueQuerystring(ctx.request.query, ['shop'], ctx); // TODO: validate shop
 
-        const httpClient = createHttpClient(shop);
-
-        let access_token = await R.compose(
-            R.partial(logReceivedData, ['Received access_token']),
-            R.partial(getDataFromResponse, [["data", "access_token"]]),
+        let accessToken = await R.compose(
+            R.curry(processResponse)(["data", "access_token"], 'Received access_token'),
             shopifyHelper.getShopifyAccessToken
-        )(httpClient, {
-            client_id: SHOPIFY_API_KEY,
-            client_secret: SHOPIFY_API_SECRET_KEY,
-            code: code
+        )({
+            shop, payload: {
+                client_id: SHOPIFY_API_KEY,
+                client_secret: SHOPIFY_API_SECRET_KEY,
+                code: getValueQuerystring(ctx.request.query, ['code'], ctx)
+            }
         });
 
-        let storefront_access_token = await R.compose(
-            R.partial(logReceivedData, ['Received storefront_access_token']),
-            R.partial(getDataFromResponse, [["data", "storefront_access_token", "access_token"]]),
+        let storefrontAccessToken = await R.compose(
+            R.curry(processResponse)(
+                ["data", "storefront_access_token", "access_token"], 'Received storefront_access_token'),
             shopifyHelper.getShopifyStoreFrontAccessToken
-        )(httpClient, access_token);
+        )({ shop, accessToken });
 
-        saveTokensInSession({ access_token, storefront_access_token, shop });
+        saveTokensInSession({ accessToken, storefrontAccessToken, shop });
 
-        ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${storefront_access_token}&shop=${shop}`);
+        ctx.redirect(`${FRONT_END_URL}?storefrontaccesstoken=${storefrontAccessToken}&shop=${shop}`);
     });
 
     router.post('/admin/checkouts', async (ctx) => {
-        const { access_token, shop } = getTokensFromSession();
-
-        const httpClient = R.compose(
-            R.partial(shopifyHelper.createHttpClientWithHeader, [shop]),
-            shopifyHelper.createCheckoutHeader
-        )(access_token, shop);
-
         let response = await R.compose(
-            R.partial(logReceivedData, ['Received checkout info']),
-            R.partial(getDataFromResponse, [["data"]]),
+            R.curry(processResponse)(["data"], 'Received checkout info'),
             shopifyHelper.startShopifyCheckout
-        )(httpClient, ctx.request.body);
+        )(R.merge(getTokensFromSession(), { payload: ctx.request.body }));
 
         ctx.body = response;
     });
 
     router.get('/admin/checkouts/:token/shipping_rates', async (ctx) => {
-        const { access_token, shop } = getTokensFromSession();
-
-        const httpClient = R.compose(
-            R.partial(shopifyHelper.createHttpClientWithHeader, [shop]),
-            shopifyHelper.createCheckoutHeader
-        )(access_token, shop);
-
         let response = await R.compose(
-            R.partial(logReceivedData, ['Received shipping rate']),
-            R.partial(getDataFromResponse, [["data"]]),
-            R.partial(shopifyHelper.getShippingRates, [httpClient])
-        )(ctx.params.token);
+            R.curry(processResponse)(["data"], 'Received shipping rate'),
+            shopifyHelper.getShippingRates
+        )(R.merge(getTokensFromSession(), { token: ctx.params.token }));
 
         ctx.body = response;
     });
 
+    router.post('/admin/checkouts/:token/payments', async (ctx) => {
+        let response = await R.compose(
+            R.curry(processResponse)(["data"], 'Received payment information'),
+            shopifyHelper.createCheckoutPayment
+        )(R.merge(getTokensFromSession(), { token: ctx.params.token, payload: ctx.request.body }));
+
+        ctx.body = response;
+    })
+
     app.use(router.routes());
 }
 
-function logReceivedData(msg, promise) {
-    return promise
-        .then((data) => {
-            console.log(`${msg}: ${data}`);
-            return data;
-        });
-}
+const getValueQuerystring = (queryString, dataPath, ctx) => R.compose(
+    R.tap((data) => console.log(`${dataPath.join()}: ${data}`)),
+    R.unless(R.compose(R.not, R.isNil), () => { ctx.throw(401, `Missing ${dataPath.join()} in querystring.`) })
+)(R.path(dataPath, queryString));
 
-function getDataFromResponse(path, promise) {
-    return promise
-        .then((response) => R.path(path, response))
-        .catch((error) => console.error(error));
-}
+const processResponse = (dataPath, logMsg, promise) => R.compose(
+    R.tap(R.partial((msg, promise) => promise.then((data) => console.log(`${msg}: ${data}`)), [logMsg])),
+    promise => R.otherwise(error => console.error(error))(promise),
+    R.partial((path, promise) => R.andThen(response => R.path(path, response))(promise), [dataPath])
+)(promise);
 
 function saveTokensInSession(tokens) {
     //ctx.cookies.set('tokens', ctx.tokens.access_token, { signed: true, httpOnly: false });
     mockSession.tokens = tokens;
 }
 
-function getTokensFromSession() {
-    return mockSession.tokens;
-}
+const getTokensFromSession = () => mockSession.tokens;
