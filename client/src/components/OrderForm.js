@@ -123,8 +123,8 @@ let checkoutRequestData = {
             <input type="checkbox" name="billing" id="billing" />
             <label htmlFor="billing">Same as shipping</label>
           </section> */}
-          {/* <section className="summary">
-            <h4 id="summary-text">Summary</h4>
+          <section className="summary">
+            {/* <h4 id="summary-text">Summary</h4>
             <div className="summary-product">
               <p>{props.productTitle}</p>
               <p>{props.productPrice}</p>
@@ -136,9 +136,9 @@ let checkoutRequestData = {
             <div className="summary-total">
               <p>Total</p>
               <p id="total">{`$${Number(props.productPrice) + 5.29}`}</p>
-            </div>
+            </div> */}
             <button onClick={() => setBuyState(!buyState)}>Continue</button>
-          </section> */}
+          </section>
         </>
       )}
     </>

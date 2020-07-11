@@ -1,7 +1,7 @@
 .overlay-config-panel-container {
-  padding: 0.5em;
   display: flex;
   flex-direction: column;
+  padding: 0.5em;
 }
 
 /* the preview section */
@@ -19,4 +19,5 @@
 #overlay-preview-image {
   width: 50%;
   height: 80%;
+  margin-right: 0.9em;
 }

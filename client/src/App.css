@@ -22,3 +22,17 @@
   background: #f5f5f5;
   border: 1px solid black;
 }
+
+select {
+  width: 100%;
+}
+
+input {
+  width: 100%;
+}
+
+label {
+  margin-bottom: 0.1em;
+  margin-top: 0.4em;
+}
+

@@ -62,13 +62,13 @@ function ProductSettingsPanel(props) {
         <div>
           <div className="select-product">
             <label htmlFor="select-product">SELECT PRODUCT</label>
-            <Typeahead
+            {/* <Typeahead
               labelKey="title"
               id="select-product"
               onChange={(selected) => setSelected(selected)}
               options={products}
               placeholder="Choose a product..."
-            />
+            /> */}
             {/* <Autosuggest
                 inputProps={{
                   placeholder: "Select a product",
@@ -93,16 +93,16 @@ function ProductSettingsPanel(props) {
                 }}
               renderSuggestion={suggestion => <div>{suggestion.name}</div>}
               /> */}
-            {/* <select
+            <select
                 onChange={handleProductChange}
                 name="select-product"
                 id="select-product"
               >
                 {products}
-              </select> */}
+              </select>
           </div>
           <div className="product-preview">
-            <div className="product-image">
+            
               <img
                 id="panel-image"
                 src={
@@ -116,14 +116,14 @@ function ProductSettingsPanel(props) {
                     : "Man doing up his LED high top running shoes"
                 }
               />
-            </div>
+            
             <div className="product-description">
               <p>
                 {product
                   ? product.node.title
                   : "Nasty Gal Limited Edition T-Shirt 2020"}
               </p>
-              <p>
+              <p style={{ marginTop: "0.5em" }}>
                 {product ? product.node.variants.edges[0].node.price : "$19.99"}
               </p>
             </div>

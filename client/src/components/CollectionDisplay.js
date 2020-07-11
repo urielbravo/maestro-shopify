@@ -36,6 +36,7 @@ function CollectionDisplay(props) {
   };
 
   let renderCollectionProductDetail = () => {
+    console.log(ChosenProduct)
     return (
       <CollectionProductDetail
         productId={ChosenProduct.productId}
