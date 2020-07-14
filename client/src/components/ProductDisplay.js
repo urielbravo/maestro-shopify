@@ -42,6 +42,7 @@ function ProductDisplay(props) {
 
   return (
     <div className="product-display">
+      {product && console.log(product.node.variants.edges)}
       <section className="product-view">
         {product ? (
           <ProductView

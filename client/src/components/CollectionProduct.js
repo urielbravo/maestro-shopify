@@ -9,7 +9,8 @@ function CollectionProduct(props) {
       productImage: props.productImage,
       productTitle: props.productTitle,
       productDescription: props.productDescription,
-      productPrice: props.productPrice
+      productPrice: props.productPrice,
+      productVariants: props.collection.node.products.edges
     })
   }
   

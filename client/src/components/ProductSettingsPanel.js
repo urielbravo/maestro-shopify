@@ -148,7 +148,7 @@ function ProductSettingsPanel(props) {
 
   return (
     <div className="product-settings">
-      {console.log(products)}
+      {/* {console.log(products)} */}
       <section className="save">
         <span>&lt;</span>
         <button id="save-button" onClick={trasferId}>

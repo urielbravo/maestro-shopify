@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import ProductView from "./ProductView";
 import { BackToShopContext } from "./BackToShopContext";
 import { CartProductsContext } from "./CartProductsContext";
+import * as R from "ramda";
 
 function CollectionProductDetail(props) {
   const [buyProduct, setbuyProduct] = useState("");
@@ -20,13 +21,17 @@ function CollectionProductDetail(props) {
     }
   },[cartProducts, ])
 
+  let isProductSelected= R.hasPath(["node", "variants"], props.productVariants);
+
   return (
     <div>
+      {console.log(props.productVariants)}
       <ProductView
         productViewImage={props.productImage}
         productViewTitle={props.productTitle}
         productViewDescription={props.productDescription}
         productViewPrice={props.productPrice}
+        productVariants={props.productVariants}
       />
       {buyProduct === "" ? (
         <>
@@ -160,7 +165,6 @@ function CollectionProductDetail(props) {
           </section>
         </>
       )}
-      {console.log(`this is the value of find product: ${JSON.stringify(cartProducts)}`)}
     </div>
   );
 }

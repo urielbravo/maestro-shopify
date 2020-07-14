@@ -4,6 +4,7 @@ import CollectionProductDetail from "./CollectionProductDetail";
 import Cart from "./Cart";
 import "../styles/CollectionDisplay.css";
 import { BackToShopContext } from "./BackToShopContext";
+import * as R from "ramda";
 
 function CollectionDisplay(props) {
   const [ChosenProduct, setChosenProduct] = useState("");
@@ -36,7 +37,6 @@ function CollectionDisplay(props) {
   };
 
   let renderCollectionProductDetail = () => {
-    console.log(ChosenProduct)
     return (
       <CollectionProductDetail
         productId={ChosenProduct.productId}
@@ -44,6 +44,7 @@ function CollectionDisplay(props) {
         productTitle={ChosenProduct.productTitle}
         productPrice={ChosenProduct.productPrice}
         productDescription={ChosenProduct.productDescription}
+        productVariants={ChosenProduct.productVariants}
       />
     );
   };
@@ -70,8 +71,11 @@ function CollectionDisplay(props) {
     }
   };
 
+  let isCollectionSelected = R.hasPath(["node", "products", "edges"], collection);
+
   return (
     <div className="collection-display">
+      {/* {isCollectionSelected && console.log(collection.node.products.edges)} */}
       <section className="collection-name-section">
         <h3>FEATURED COLLECTION</h3>
         <p>{collection ? collection.node.title : "just another collection"}</p>
