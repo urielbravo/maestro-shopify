@@ -9,26 +9,20 @@ function ProductView(props) {
     setVariantId(e.target.value);
   };
 
- 
-
-
   let selectedVariant = () => {
     if (props.productVariants) {
       return props.productVariants.find((obj) => {
         return obj.node.id === variantId;
       });
     }
-      
+
   };
 
-
   // validates that a variant has been selected
- let hasVariantSelected = R.hasPath(["node"], selectedVariant());
- 
+  let hasVariantSelected = R.hasPath(["node"], selectedVariant());
 
   return (
     <>
-      {console.log(props.produVariants)}
       <img id="product-image" src={props.productViewImage} alt="" />
       <p id="product-title">{props.productViewTitle}</p>
       <p id="product-description">{props.productViewDescription}</p>

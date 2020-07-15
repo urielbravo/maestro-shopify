@@ -12,9 +12,10 @@ function CardInfo(props) {
   const [lastName, setLastName] = useState("");
   const [token, setToken] = useState("");
   const [sessionId, setSessionId] = useState("");
+  const [shopifyPaymentsAccountId, setShopifyPaymentsAccountId] = useState("");
 
   // input forms values
-  const { value: number, bind: bindnumber } = useInput("1");
+  const { value: number, bind: bindnumber } = useInput("4242424242424242");
   const { value: month, bind: bindmonth } = useInput("12");
   const { value: year, bind: bindyear } = useInput("2024");
   const { value: verification_value, bind: bindverification_value } = useInput(
@@ -27,35 +28,27 @@ function CardInfo(props) {
 
   const handleCardData = async () => {
     const cardTemp = {
-      payment: {
-        amount: amount,
-        unique_token: "30bcc15a-57b1-4e9d-b422-32b1d236fb9b", //client-side-idempotency-token
-        credit_card: {
-          number: number,
-          month: month,
-          year: year,
-          verification_value: verification_value,
-          first_name: firstName,
-          last_name: lastName,
-        },
-      },
+      card: {
+        number: number,
+        exp_month: month,
+        exp_year: year,
+        cvc: verification_value
+      }
     };
 
     try {
-      const response = await axios.post(
-        "https://elb.deposit.shopifycs.com/sessions",
+      const response = await axios.post("https://api.stripe.com/v1/tokens",
         cardTemp,
         {
           headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "authorization": "Basic c2tfdGVzdF9JQTg4NllrMEF5YVNaa3NFdlFqZGNnSEI6",
+            "stripe-account": shopifyPaymentsAccountId
           },
         }
       );
       console.log("changecardInfo response", response.data.id);
-      setSessionId(
-        R.hasPath(["data", "id"], response) && R.path(["data", "id"], response)
-      );
+      setSessionId(R.path(["data", "id"], response));
     } catch (err) {
       console.log("err: ", err);
     } finally {
@@ -73,39 +66,15 @@ function CardInfo(props) {
       )
       .then(async (res) => {
         setCheckout(res.data);
-        console.log(res);
-        setAmount(
-          R.hasPath(["data", "checkout", "total_price"], res) &&
-          R.path(["data", "checkout", "total_price"], res)
-        );
-        setFirstName(
-          R.hasPath(
-            ["data", "checkout", "shipping_address", "first_name"],
-            res
-          ) &&
-          R.path(["data", "checkout", "shipping_address", "first_name"], res)
-        );
-        setLastName(
-          (R.hasPath(
-            ["data", "checkout", "shipping_address", "last_name"],
-            res
-          ) &&
-            R.path(
-              ["data", "checkout", "shipping_address", "last_name"],
-              res
-            )) ||
-          ""
-        );
-
-        setToken(
-          (R.hasPath(["data", "checkout", "token"], res) &&
-            R.path(["data", "checkout", "token"], res)) ||
-          ""
-        );
-
+        setAmount(R.path(["data", "checkout", "total_price"], res));
+        setFirstName(R.path(["data", "checkout", "shipping_address", "first_name"], res));
+        setLastName(R.path(["data", "checkout", "shipping_address", "last_name"], res) || "");
+        setToken(R.path(["data", "checkout", "token"], res) || "");
+        setShopifyPaymentsAccountId(R.path(["data", "checkout", "shopify_payments_account_id"], res));
         if (R.hasPath(["data", "checkout", "token"], res)) {
           const token = R.path(["data", "checkout", "token"], res);
-          const response = await axios.get(`http://localhost:5000/admin/checkouts/${token}/shipping_rates`);
+          const response =
+            await axios.get(`http://localhost:5000/admin/checkouts/${token}/shipping_rates`);
         } else {
           alert("Algo Salio Mal");
         }
@@ -117,7 +86,6 @@ function CardInfo(props) {
 
   return (
     <>
-      {console.log(`this is the axios response: ${JSON.stringify(checkout)}`)}
       {cardInfo ? (
         <Confirmation
           productVariantId={props.productVariantId}

@@ -5,7 +5,7 @@ const R = require('ramda');
 const mockSession = require('./mockSession');
 const shopifyHelper = require('./shopifyHelper');
 
-const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, FRONT_END_URL } = process.env;
+const { FRONT_END_URL } = process.env;
 
 module.exports = function (app) {
     const router = new Router();
@@ -19,13 +19,7 @@ module.exports = function (app) {
         let accessToken = await R.compose(
             R.curry(processResponse)(["data", "access_token"], 'Received access_token'),
             shopifyHelper.getShopifyAccessToken
-        )({
-            shop, payload: {
-                client_id: SHOPIFY_API_KEY,
-                client_secret: SHOPIFY_API_SECRET_KEY,
-                code: getValueQuerystring(ctx.request.query, ['code'], ctx)
-            }
-        });
+        )({ shop, code: getValueQuerystring(ctx.request.query, ['code'], ctx) });
 
         let storefrontAccessToken = await R.compose(
             R.curry(processResponse)(
@@ -39,30 +33,25 @@ module.exports = function (app) {
     });
 
     router.post('/admin/checkouts', async (ctx) => {
-        let response = await R.compose(
+        ctx.body = await R.compose(
             R.curry(processResponse)(["data"], 'Received checkout info'),
-            shopifyHelper.startShopifyCheckout
+            shopifyHelper.startShopifyCheckout,
         )(R.merge(getTokensFromSession(), { payload: ctx.request.body }));
-
-        ctx.body = response;
     });
 
     router.get('/admin/checkouts/:token/shipping_rates', async (ctx) => {
-        let response = await R.compose(
+        ctx.body = await R.compose(
             R.curry(processResponse)(["data"], 'Received shipping rate'),
-            shopifyHelper.getShippingRates
+            shopifyHelper.getShippingRates,
+            R.tap(data => console.log(data))
         )(R.merge(getTokensFromSession(), { token: ctx.params.token }));
-
-        ctx.body = response;
     });
 
     router.post('/admin/checkouts/:token/payments', async (ctx) => {
-        let response = await R.compose(
+        ctx.body = await R.compose(
             R.curry(processResponse)(["data"], 'Received payment information'),
             shopifyHelper.createCheckoutPayment
         )(R.merge(getTokensFromSession(), { token: ctx.params.token, payload: ctx.request.body }));
-
-        ctx.body = response;
     })
 
     app.use(router.routes());
@@ -80,7 +69,6 @@ const processResponse = (dataPath, logMsg, promise) => R.compose(
 )(promise);
 
 function saveTokensInSession(tokens) {
-    //ctx.cookies.set('tokens', ctx.tokens.access_token, { signed: true, httpOnly: false });
     mockSession.tokens = tokens;
 }
 
