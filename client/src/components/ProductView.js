@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../styles/ProductView.css";
 import * as R from "ramda";
+import { SingleProductVariantContext } from "./SingleProductVariantContext"
 
 function ProductView(props) {
   const [variantId, setVariantId] = useState("");
+  const {productVariant, setProductVariant} = useContext(SingleProductVariantContext)
 
   let getSelectedVariantId = (e) => {
-    setVariantId(e.target.value);
+    setVariantId(e.target.value)
+    setProductVariant(e.target.value)
   };
-
  
-
 
   let selectedVariant = () => {
     if (props.productVariants) {
@@ -18,8 +19,9 @@ function ProductView(props) {
         return obj.node.id === variantId;
       });
     }
-      
   };
+
+
 
 
   // validates that a variant has been selected
@@ -28,7 +30,6 @@ function ProductView(props) {
 
   return (
     <>
-      {console.log(props.produVariants)}
       <img id="product-image" src={props.productViewImage} alt="" />
       <p id="product-title">{props.productViewTitle}</p>
       <p id="product-description">{props.productViewDescription}</p>

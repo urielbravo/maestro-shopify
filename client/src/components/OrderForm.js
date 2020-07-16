@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../styles/OrderForm.css";
 import CardInfo from "./CardInfo";
 import { useInput } from '../hooks/input-hook';
+import { SingleProductVariantContext } from "./SingleProductVariantContext"
 
 
 
 function OrderForm(props) {
   const [buyState, setBuyState] = useState(false)
+  const [decodedVariant, setDecodedVariant] = useState("")
+
+  const { productVariant } = useContext(SingleProductVariantContext)
 
   // input forms values
   const { value:first_name, bind:bindfirst_name} = useInput('asdasd');
@@ -18,16 +22,26 @@ function OrderForm(props) {
   const { value:phone, bind:bindphone} = useInput('6421612165');
   const { value:email, bind:bindemail} = useInput('azazueta@alioit.com');
 
+
   let changeBuyState = (buyStateChange) => {
     setBuyState(buyStateChange)
   }
+
+  useEffect(() => {
+    if (productVariant) {
+      let variantId = atob(productVariant)
+      setDecodedVariant(variantId.match("(?<=ProductVariant\/).*"))
+      // setDecodedVariant(atob(productVariant).search("(?<=ProductVariant\/).*)"))
+    }
+  }, [productVariant])
+  
 
 let checkoutRequestData = {
   "checkout": {
     email,
     "line_items": [
       {
-        "variant_id": 34501861769382,
+        "variant_id": decodedVariant,
         "quantity": 1
       }
     ],
@@ -47,6 +61,7 @@ let checkoutRequestData = {
 
   return (
     <>
+    {console.log(`decoded variant: ${decodedVariant}`)}
       {buyState ? (
         <CardInfo 
         productVariantId={props.productVariantId}

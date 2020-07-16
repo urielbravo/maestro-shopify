@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../styles/ProductDisplay.css";
 import ProductView from "./ProductView";
 import Client from "shopify-buy";
 import { StorefrontContext } from "./StorefrontContext";
 import OrderForm from "./OrderForm";
+import { SingleProductVariantContext } from "./SingleProductVariantContext"
 
 function ProductDisplay(props) {
   const [shipping_address, setShippingAddress] = useState({});
+  const [productVariant, setProductVariant] = useState("")
 
   const context = React.useContext(StorefrontContext);
 
@@ -41,8 +43,10 @@ function ProductDisplay(props) {
   }
 
   return (
+    <>
+    <SingleProductVariantContext.Provider value={{productVariant, setProductVariant}}>
     <div className="product-display">
-      {product && console.log(product.node.variants.edges)}
+      {/* {product && console.log(product.node.variants.edges)} */}
       <section className="product-view">
         {product ? (
           <ProductView
@@ -67,6 +71,8 @@ function ProductDisplay(props) {
         <span>Choose a product and click save to see it here</span>
       )}
     </div>
+    </SingleProductVariantContext.Provider>
+    </>
   );
 }
 
