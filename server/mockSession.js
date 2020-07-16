@@ -1,5 +1,5 @@
 module.exports.tokens = {
-    access_token: '',
-    storefront_access_token: '',
-    shop: ''
+    accessToken: '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',
+    storefrontAccessToken: '',
+    shop: 'maestro-store-1.myshopify.com'
 }

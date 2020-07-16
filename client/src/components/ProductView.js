@@ -11,7 +11,6 @@ function ProductView(props) {
     setVariantId(e.target.value)
     setProductVariant(e.target.value)
   };
- 
 
   let selectedVariant = () => {
     if (props.productVariants) {
@@ -19,14 +18,13 @@ function ProductView(props) {
         return obj.node.id === variantId;
       });
     }
+
   };
 
 
 
-
   // validates that a variant has been selected
- let hasVariantSelected = R.hasPath(["node"], selectedVariant());
- 
+  let hasVariantSelected = R.hasPath(["node"], selectedVariant());
 
   return (
     <>
