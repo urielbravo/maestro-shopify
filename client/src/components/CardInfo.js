@@ -16,10 +16,10 @@ function CardInfo(props) {
 
   // input forms values
   const { value: number, bind: bindnumber } = useInput("4242424242424242");
-  const { value: month, bind: bindmonth } = useInput("12");
-  const { value: year, bind: bindyear } = useInput("2024");
+  const { value: month, bind: bindmonth } = useInput(12);
+  const { value: year, bind: bindyear } = useInput(2024);
   const { value: verification_value, bind: bindverification_value } = useInput(
-    "111"
+    123
   );
 
   let changecardInfo = (cardInfoChange) => {
@@ -27,28 +27,26 @@ function CardInfo(props) {
   };
 
   const handleCardData = async () => {
-    const cardTemp = {
-      card: {
-        number: number,
-        exp_month: month,
-        exp_year: year,
-        cvc: verification_value
-      }
-    };
+    var creditCard = new URLSearchParams();
+    creditCard.append("card[number]", number);
+    creditCard.append("card[exp_month]", year);
+    creditCard.append("card[exp_year]", month);
+    creditCard.append("card[cvc]", verification_value);
 
+    let httpCient = axios.create({
+      'baseURL': 'https://api.stripe.com',
+      'headers': {
+        'content-type': 'application/x-www-form-urlencoded',
+        'authorization': 'Basic c2tfdGVzdF9JQTg4NllrMEF5YVNaa3NFdlFqZGNnSEI6',
+        'stripe-account': shopifyPaymentsAccountId
+      }
+    })
     try {
-      const response = await axios.post("https://api.stripe.com/v1/tokens",
-        cardTemp,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "authorization": "Basic c2tfdGVzdF9JQTg4NllrMEF5YVNaa3NFdlFqZGNnSEI6",
-            "stripe-account": shopifyPaymentsAccountId
-          },
-        }
-      );
+
+      const response = await httpCient.post("/v1/tokens", creditCard);
       console.log("changecardInfo response", response.data.id);
       setSessionId(R.path(["data", "id"], response));
+
     } catch (err) {
       console.log("err: ", err);
     } finally {
