@@ -12,25 +12,24 @@ module.exports = {
     )(shop),
 
     getShopifyStoreFrontAccessToken: ({ shop, accessToken }) => R.compose(
-        R.partial((accessToken, httpClient) =>
-            httpClient.post('/admin/api/2020-04/storefront_access_tokens.json',),
+        R.partial((payload, httpClient) => httpClient.post('/admin/api/2020-04/storefront_access_tokens.json', payload),
             [generateStorePayload(accessToken)]),
         createHttpClient
-    )(shop),
+    )(shop, accessToken),
 
     startShopifyCheckout: ({ shop, accessToken, payload }) => R.compose(
         R.partial((payload, httpClient) => httpClient.post("/admin/checkouts.json", payload), [payload]),
-        createHttpClient,
+        createHttpClient
     )(shop, accessToken),
 
     getShippingRates: ({ shop, accessToken, token }) => R.compose(
         R.partial((token, httpClient) => httpClient.get(`/admin/checkouts/${token}/shipping_rates.json`), [token]),
-        createHttpClient,
+        createHttpClient
     )(shop, accessToken),
 
     createCheckoutPayment: ({ shop, accessToken, token, payload }) => R.compose(
         R.partial((token, payload, httpClient) => httpClient.post(`/admin/checkouts/${token}/payments.json`, payload), [token, payload]),
-        createHttpClient,
+        createHttpClient
     )(shop, accessToken)
 }
 
@@ -49,7 +48,7 @@ const generateBaseConfiguration = ({ shop }) => { return { 'baseURL': `https://$
 
 const generateHeaderConfiguration = ({ shop, accessToken }) => R.assoc('headers', {
     "X-Shopify-Access-Token": accessToken, "Content-Type": "application/json", "X-Host-Override": shop,
-}, generateBaseConfiguration({shop}));
+}, generateBaseConfiguration({ shop }));
 
 const generatePartnerPayload = (code) => {
     return { "client_id": SHOPIFY_API_KEY, "client_secret": SHOPIFY_API_SECRET_KEY, code };
