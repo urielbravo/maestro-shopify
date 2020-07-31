@@ -13,6 +13,7 @@ function CardInfo(props) {
   const [token, setToken] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [shopifyPaymentsAccountId, setShopifyPaymentsAccountId] = useState("");
+  const secretKey = 'sk_test_IA886Yk0AyaSZksEvQjdcgHB';
 
   // input forms values
   const { value: number, bind: bindnumber } = useInput("4242424242424242");
@@ -37,7 +38,7 @@ function CardInfo(props) {
       'baseURL': 'https://api.stripe.com',
       'headers': {
         'content-type': 'application/x-www-form-urlencoded',
-        'authorization': 'Basic c2tfdGVzdF9JQTg4NllrMEF5YVNaa3NFdlFqZGNnSEI6',
+        'authorization': `Basic ${secretKey}`,
         'stripe-account': shopifyPaymentsAccountId
       }
     })
