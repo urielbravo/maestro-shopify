@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Authentication.css";
 
-const REDIRECT_URI = "https://56c33002286b.ngrok.io/callback";
+const REDIRECT_URI = "https://1381966b1f1d.ngrok.io/callback";
 const CLIENT_ID = "2c6bad7108add438f00ba75a7b3b33e9";
 
 function Authentication() {
